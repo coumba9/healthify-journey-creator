@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Brain, Stethoscope, FirstAid } from "lucide-react";
+import { Heart, Brain, Stethoscope, Syringe } from "lucide-react";
 
 const services = [
   {
@@ -20,7 +20,7 @@ const services = [
   {
     title: "Urgences",
     description: "Service d'urgence disponible 24/7 pour tous types de situations.",
-    icon: FirstAid,
+    icon: Syringe,
   },
 ];
 
