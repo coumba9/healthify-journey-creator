@@ -1,33 +1,53 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { Calendar } from "@/components/ui/calendar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import AppointmentForm from "@/components/appointment/AppointmentForm";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const PatientDashboard = () => {
   const { toast } = useToast();
+  
   const appointments = [
-    { id: 1, doctor: "Dr. Smith", date: "2024-03-20", time: "14:00", status: "Confirmé" },
-    { id: 2, doctor: "Dr. Johnson", date: "2024-03-25", time: "10:30", status: "En attente" },
+    { 
+      id: 1, 
+      doctor: "Dr. Smith", 
+      date: "2024-03-20", 
+      time: "14:00", 
+      status: "Confirmé",
+      service: "Consultation générale"
+    },
+    { 
+      id: 2, 
+      doctor: "Dr. Johnson", 
+      date: "2024-03-25", 
+      time: "10:30", 
+      status: "En attente",
+      service: "Cardiologie"
+    },
   ];
 
-  const documents = [
-    { id: 1, name: "Ordonnance - 15/03/2024", type: "PDF", size: "156 KB" },
-    { id: 2, name: "Résultats Analyses - 10/03/2024", type: "PDF", size: "2.3 MB" },
-  ];
-
-  const prescriptions = [
-    { id: 1, medication: "Paracétamol", dosage: "1000mg", frequency: "3x/jour", duration: "5 jours" },
-    { id: 2, medication: "Amoxicilline", dosage: "500mg", frequency: "2x/jour", duration: "7 jours" },
-  ];
-
-  const handleDownload = (documentName: string) => {
+  const handleCancelAppointment = (id: number) => {
     toast({
-      title: "Téléchargement",
-      description: `Le document ${documentName} va être téléchargé.`,
+      title: "Rendez-vous annulé",
+      description: "Votre rendez-vous a été annulé avec succès.",
+    });
+  };
+
+  const handleRescheduleAppointment = (id: number) => {
+    toast({
+      title: "Rendez-vous reporté",
+      description: "Choisissez une nouvelle date pour votre rendez-vous.",
+    });
+  };
+
+  const handleConfirmAppointment = (id: number) => {
+    toast({
+      title: "Rendez-vous confirmé",
+      description: "Votre rendez-vous a été confirmé.",
     });
   };
 
@@ -39,15 +59,6 @@ const PatientDashboard = () => {
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Prendre un rendez-vous</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AppointmentForm />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
               <CardTitle>Mes rendez-vous</CardTitle>
             </CardHeader>
             <CardContent>
@@ -56,51 +67,56 @@ const PatientDashboard = () => {
                   <TableRow>
                     <TableHead>Médecin</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead>Heure</TableHead>
+                    <TableHead>Service</TableHead>
                     <TableHead>Statut</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {appointments.map((appointment) => (
                     <TableRow key={appointment.id}>
                       <TableCell>{appointment.doctor}</TableCell>
-                      <TableCell>{appointment.date}</TableCell>
-                      <TableCell>{appointment.time}</TableCell>
+                      <TableCell>{`${appointment.date} ${appointment.time}`}</TableCell>
+                      <TableCell>{appointment.service}</TableCell>
                       <TableCell>{appointment.status}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Mes documents</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nom</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Taille</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {documents.map((doc) => (
-                    <TableRow key={doc.id}>
-                      <TableCell>{doc.name}</TableCell>
-                      <TableCell>{doc.type}</TableCell>
-                      <TableCell>{doc.size}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="outline"
+                      <TableCell className="space-x-2">
+                        <Button 
+                          variant="outline" 
                           size="sm"
-                          onClick={() => handleDownload(doc.name)}
+                          onClick={() => handleConfirmAppointment(appointment.id)}
                         >
-                          Télécharger
+                          Confirmer
+                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button 
+                              variant="outline"
+                              size="sm"
+                            >
+                              Reporter
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Reporter le rendez-vous</DialogTitle>
+                            </DialogHeader>
+                            <Calendar
+                              mode="single"
+                              className="rounded-md border"
+                              onSelect={(date) => {
+                                if (date) {
+                                  handleRescheduleAppointment(appointment.id);
+                                }
+                              }}
+                            />
+                          </DialogContent>
+                        </Dialog>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleCancelAppointment(appointment.id)}
+                        >
+                          Annuler
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -112,29 +128,44 @@ const PatientDashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Mes prescriptions</CardTitle>
+              <CardTitle>Nouveau rendez-vous</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Médicament</TableHead>
-                    <TableHead>Dosage</TableHead>
-                    <TableHead>Fréquence</TableHead>
-                    <TableHead>Durée</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {prescriptions.map((prescription) => (
-                    <TableRow key={prescription.id}>
-                      <TableCell>{prescription.medication}</TableCell>
-                      <TableCell>{prescription.dosage}</TableCell>
-                      <TableCell>{prescription.frequency}</TableCell>
-                      <TableCell>{prescription.duration}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <AppointmentForm />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Documents médicaux</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-3 border rounded">
+                  <span>Ordonnance - 15/03/2024</span>
+                  <Button variant="outline" size="sm">Télécharger</Button>
+                </div>
+                <div className="flex justify-between items-center p-3 border rounded">
+                  <span>Résultats Analyses - 10/03/2024</span>
+                  <Button variant="outline" size="sm">Télécharger</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Historique des consultations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {appointments.map((appointment) => (
+                  <div key={appointment.id} className="p-3 border rounded">
+                    <p className="font-medium">{appointment.doctor}</p>
+                    <p className="text-sm text-gray-600">{`${appointment.date} - ${appointment.service}`}</p>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
