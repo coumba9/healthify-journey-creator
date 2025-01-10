@@ -1,13 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const AdminDashboard = () => {
+  const { toast } = useToast();
+
   const recentUsers = [
-    { id: 1, name: "Jean Dupont", role: "Patient", date: "2024-03-15" },
-    { id: 2, name: "Dr. Smith", role: "Médecin", date: "2024-03-14" },
-    { id: 3, name: "Marie Martin", role: "Patient", date: "2024-03-13" },
+    { id: 1, name: "Jean Dupont", role: "Patient", date: "2024-03-15", status: "Actif" },
+    { id: 2, name: "Dr. Smith", role: "Médecin", date: "2024-03-14", status: "Actif" },
+    { id: 3, name: "Marie Martin", role: "Patient", date: "2024-03-13", status: "En attente" },
   ];
 
   const stats = {
@@ -15,6 +19,15 @@ const AdminDashboard = () => {
     totalDoctors: 10,
     totalPatients: 140,
     activeAppointments: 45,
+    monthlyRevenue: "15,000 €",
+    pendingApprovals: 5,
+  };
+
+  const handleApproveUser = (userId: number) => {
+    toast({
+      title: "Utilisateur approuvé",
+      description: "L'utilisateur a été approuvé avec succès.",
+    });
   };
 
   return (
@@ -45,9 +58,18 @@ const AdminDashboard = () => {
                   <p className="text-sm text-gray-500">Rendez-vous Actifs</p>
                   <p className="text-2xl font-bold">{stats.activeAppointments}</p>
                 </div>
+                <div>
+                  <p className="text-sm text-gray-500">Revenu Mensuel</p>
+                  <p className="text-2xl font-bold">{stats.monthlyRevenue}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Approbations en attente</p>
+                  <p className="text-2xl font-bold">{stats.pendingApprovals}</p>
+                </div>
               </div>
             </CardContent>
           </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Utilisateurs Récents</CardTitle>
@@ -59,6 +81,8 @@ const AdminDashboard = () => {
                     <TableHead>Nom</TableHead>
                     <TableHead>Rôle</TableHead>
                     <TableHead>Date d'inscription</TableHead>
+                    <TableHead>Statut</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -67,10 +91,66 @@ const AdminDashboard = () => {
                       <TableCell>{user.name}</TableCell>
                       <TableCell>{user.role}</TableCell>
                       <TableCell>{user.date}</TableCell>
+                      <TableCell>{user.status}</TableCell>
+                      <TableCell>
+                        {user.status === "En attente" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleApproveUser(user.id)}
+                          >
+                            Approuver
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Gestion des Services</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span>Cardiologie</span>
+                  <Button variant="outline" size="sm">Gérer</Button>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Pédiatrie</span>
+                  <Button variant="outline" size="sm">Gérer</Button>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Neurologie</span>
+                  <Button variant="outline" size="sm">Gérer</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Configuration Système</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span>Sauvegardes automatiques</span>
+                  <Button variant="outline" size="sm">Configurer</Button>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Notifications</span>
+                  <Button variant="outline" size="sm">Paramètres</Button>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Maintenance</span>
+                  <Button variant="outline" size="sm">Planifier</Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
