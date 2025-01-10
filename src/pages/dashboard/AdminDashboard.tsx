@@ -1,8 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const AdminDashboard = () => {
+  const recentUsers = [
+    { id: 1, name: "Jean Dupont", role: "Patient", date: "2024-03-15" },
+    { id: 2, name: "Dr. Smith", role: "Médecin", date: "2024-03-14" },
+    { id: 3, name: "Marie Martin", role: "Patient", date: "2024-03-13" },
+  ];
+
+  const stats = {
+    totalUsers: 150,
+    totalDoctors: 10,
+    totalPatients: 140,
+    activeAppointments: 45,
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -11,38 +25,52 @@ const AdminDashboard = () => {
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Utilisateurs</CardTitle>
+              <CardTitle>Statistiques Globales</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">Total des utilisateurs: 0</p>
-              <p className="text-gray-600">Nouveaux utilisateurs: 0</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Total Utilisateurs</p>
+                  <p className="text-2xl font-bold">{stats.totalUsers}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Total Médecins</p>
+                  <p className="text-2xl font-bold">{stats.totalDoctors}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Total Patients</p>
+                  <p className="text-2xl font-bold">{stats.totalPatients}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Rendez-vous Actifs</p>
+                  <p className="text-2xl font-bold">{stats.activeAppointments}</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Rendez-vous</CardTitle>
+              <CardTitle>Utilisateurs Récents</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">Total des rendez-vous: 0</p>
-              <p className="text-gray-600">Rendez-vous aujourd'hui: 0</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Médecins</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Total des médecins: 0</p>
-              <p className="text-gray-600">Médecins actifs: 0</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Système</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">État du système: Opérationnel</p>
-              <p className="text-gray-600">Dernière mise à jour: Aujourd'hui</p>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nom</TableHead>
+                    <TableHead>Rôle</TableHead>
+                    <TableHead>Date d'inscription</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentUsers.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.role}</TableCell>
+                      <TableCell>{user.date}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </div>
