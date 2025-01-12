@@ -13,7 +13,7 @@ import {
   Bell,
   User,
   ClipboardList,
-  Pills,
+  Pill,
   CreditCard,
 } from "lucide-react";
 
@@ -64,7 +64,7 @@ const PatientDashboard = () => {
       color: "text-red-500",
     },
     {
-      icon: Pills,
+      icon: Pill,
       title: "Prescriptions",
       description: "Gérer vos ordonnances",
       path: "/dashboard/prescriptions",
