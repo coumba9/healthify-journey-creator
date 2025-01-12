@@ -55,6 +55,70 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/dashboard/appointments"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/documents"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/messages"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/notifications"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/profile"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/history"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/prescriptions"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/payments"
+              element={
+                <ProtectedRoute>
+                  <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

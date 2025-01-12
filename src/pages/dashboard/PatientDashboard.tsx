@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import {
 
 const PatientDashboard = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const quickLinks = [
     {
@@ -79,6 +80,14 @@ const PatientDashboard = () => {
     },
   ];
 
+  const handleCardClick = (path: string) => {
+    navigate(path);
+    toast({
+      title: "Navigation",
+      description: "Redirection vers " + path,
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -93,18 +102,17 @@ const PatientDashboard = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              onClick={() => handleCardClick(link.path)}
             >
-              <Link to={link.path}>
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300 cursor-pointer border-l-4 hover:scale-105 transform transition-transform">
-                  <CardHeader className="flex flex-row items-center space-x-4 pb-2">
-                    <link.icon className={`h-6 w-6 ${link.color}`} />
-                    <CardTitle className="text-lg">{link.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-500">{link.description}</p>
-                  </CardContent>
-                </Card>
-              </Link>
+              <Card className="h-full hover:shadow-lg transition-shadow duration-300 cursor-pointer border-l-4 hover:scale-105 transform transition-transform">
+                <CardHeader className="flex flex-row items-center space-x-4 pb-2">
+                  <link.icon className={`h-6 w-6 ${link.color}`} />
+                  <CardTitle className="text-lg">{link.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-500">{link.description}</p>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
         </div>
@@ -120,8 +128,11 @@ const PatientDashboard = () => {
             <CardContent>
               <Calendar mode="single" className="rounded-md border" />
               <div className="mt-4">
-                <Button asChild className="w-full">
-                  <Link to="/dashboard/appointments">Voir tous les rendez-vous</Link>
+                <Button
+                  className="w-full"
+                  onClick={() => handleCardClick("/dashboard/appointments")}
+                >
+                  Voir tous les rendez-vous
                 </Button>
               </div>
             </CardContent>
@@ -143,8 +154,12 @@ const PatientDashboard = () => {
                 <p className="font-medium">Rendez-vous confirmé</p>
                 <p className="text-sm text-gray-500">Il y a 1 jour</p>
               </div>
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/dashboard/notifications">Voir toutes les notifications</Link>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleCardClick("/dashboard/notifications")}
+              >
+                Voir toutes les notifications
               </Button>
             </CardContent>
           </Card>
