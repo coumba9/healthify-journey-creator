@@ -1,162 +1,105 @@
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 
 const AdminDashboard = () => {
-  const { toast } = useToast();
-
-  const recentUsers = [
-    { id: 1, name: "Jean Dupont", role: "Patient", date: "2024-03-15", status: "Actif" },
-    { id: 2, name: "Dr. Smith", role: "Médecin", date: "2024-03-14", status: "Actif" },
-    { id: 3, name: "Marie Martin", role: "Patient", date: "2024-03-13", status: "En attente" },
-  ];
-
-  const stats = {
-    totalUsers: 150,
-    totalDoctors: 10,
-    totalPatients: 140,
-    activeAppointments: 45,
-    monthlyRevenue: "15,000 €",
-    pendingApprovals: 5,
-  };
-
-  const handleApproveUser = (userId: number) => {
-    toast({
-      title: "Utilisateur approuvé",
-      description: "L'utilisateur a été approuvé avec succès.",
-    });
-  };
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Tableau de bord Administrateur</h1>
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Statistiques Globales</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Total Utilisateurs</p>
-                  <p className="text-2xl font-bold">{stats.totalUsers}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Total Médecins</p>
-                  <p className="text-2xl font-bold">{stats.totalDoctors}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Total Patients</p>
-                  <p className="text-2xl font-bold">{stats.totalPatients}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Rendez-vous Actifs</p>
-                  <p className="text-2xl font-bold">{stats.activeAppointments}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Revenu Mensuel</p>
-                  <p className="text-2xl font-bold">{stats.monthlyRevenue}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Approbations en attente</p>
-                  <p className="text-2xl font-bold">{stats.pendingApprovals}</p>
-                </div>
+    <DashboardLayout>
+      <h1 className="text-3xl font-bold mb-8">Tableau de bord Administrateur</h1>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Statistiques Globales</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Total Utilisateurs</p>
+                <p className="text-2xl font-bold">150</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Utilisateurs Récents</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nom</TableHead>
-                    <TableHead>Rôle</TableHead>
-                    <TableHead>Date d'inscription</TableHead>
-                    <TableHead>Statut</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>{user.name}</TableCell>
-                      <TableCell>{user.role}</TableCell>
-                      <TableCell>{user.date}</TableCell>
-                      <TableCell>{user.status}</TableCell>
-                      <TableCell>
-                        {user.status === "En attente" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleApproveUser(user.id)}
-                          >
-                            Approuver
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Gestion des Services</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Cardiologie</span>
-                  <Button variant="outline" size="sm">Gérer</Button>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Pédiatrie</span>
-                  <Button variant="outline" size="sm">Gérer</Button>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Neurologie</span>
-                  <Button variant="outline" size="sm">Gérer</Button>
-                </div>
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Rendez-vous Aujourd'hui</p>
+                <p className="text-2xl font-bold">45</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Configuration Système</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Sauvegardes automatiques</span>
-                  <Button variant="outline" size="sm">Configurer</Button>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Notifications</span>
-                  <Button variant="outline" size="sm">Paramètres</Button>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Maintenance</span>
-                  <Button variant="outline" size="sm">Planifier</Button>
-                </div>
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Médecins Actifs</p>
+                <p className="text-2xl font-bold">10</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
-      <Footer />
-    </div>
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Nouveaux Patients</p>
+                <p className="text-2xl font-bold">25</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Gestion des Services</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {["Cardiologie", "Pédiatrie", "Neurologie"].map((service) => (
+                <div
+                  key={service}
+                  className="flex justify-between items-center p-4 border rounded"
+                >
+                  <span>{service}</span>
+                  <Button variant="outline" size="sm">
+                    Gérer
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Dernières Activités</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                "Nouveau médecin inscrit",
+                "Mise à jour du planning",
+                "Maintenance système",
+              ].map((activity, index) => (
+                <div key={index} className="p-4 border rounded">
+                  <p className="font-medium">{activity}</p>
+                  <p className="text-sm text-gray-600">Il y a 2 heures</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Configuration Système</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                "Sauvegardes",
+                "Notifications",
+                "Paramètres de sécurité",
+              ].map((setting, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center p-4 border rounded"
+                >
+                  <span>{setting}</span>
+                  <Button variant="outline" size="sm">
+                    Configurer
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </DashboardLayout>
   );
 };
 
