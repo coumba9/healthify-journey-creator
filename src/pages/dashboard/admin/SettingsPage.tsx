@@ -9,51 +9,25 @@ const SettingsPage = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold">Paramètres</h1>
+        <h1 className="text-3xl font-bold">Paramètres du système</h1>
 
         <div className="grid gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Paramètres généraux</CardTitle>
+              <CardTitle>Configuration générale</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="clinicName">Nom de la clinique</Label>
-                <Input id="clinicName" defaultValue="Clinique Santé+" />
+                <Label htmlFor="siteName">Nom du site</Label>
+                <Input id="siteName" defaultValue="Clinique Santé+" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email de contact</Label>
-                <Input id="email" type="email" defaultValue="contact@clinique.fr" />
+                <Label htmlFor="adminEmail">Email administrateur</Label>
+                <Input id="adminEmail" type="email" defaultValue="admin@clinique.fr" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Téléphone</Label>
-                <Input id="phone" defaultValue="+33 1 23 45 67 89" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Notifications</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Notifications email</Label>
-                  <p className="text-sm text-gray-600">
-                    Recevoir les notifications par email
-                  </p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Rappels SMS</Label>
-                  <p className="text-sm text-gray-600">
-                    Envoyer des rappels SMS aux patients
-                  </p>
-                </div>
-                <Switch defaultChecked />
+                <Label htmlFor="supportPhone">Téléphone support</Label>
+                <Input id="supportPhone" defaultValue="+33 1 23 45 67 89" />
               </div>
             </CardContent>
           </Card>
@@ -65,18 +39,44 @@ const SettingsPage = () => {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Authentification à deux facteurs</Label>
+                  <Label>Double authentification</Label>
                   <p className="text-sm text-gray-600">
-                    Activer l'authentification à deux facteurs
+                    Activer la double authentification pour tous les utilisateurs
+                  </p>
+                </div>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Verrouillage automatique</Label>
+                  <p className="text-sm text-gray-600">
+                    Verrouiller les comptes après 3 tentatives échouées
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Maintenance</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Mode maintenance</Label>
+                  <p className="text-sm text-gray-600">
+                    Activer le mode maintenance du site
                   </p>
                 </div>
                 <Switch />
               </div>
               <div className="space-y-2">
-                <Label>Session</Label>
+                <Label>Sauvegarde</Label>
                 <div className="flex gap-4">
-                  <Button variant="outline">Déconnecter toutes les sessions</Button>
-                  <Button variant="destructive">Réinitialiser les accès</Button>
+                  <Button variant="outline">Sauvegarder maintenant</Button>
+                  <Button variant="outline">Restaurer</Button>
                 </div>
               </div>
             </CardContent>
