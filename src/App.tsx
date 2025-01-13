@@ -16,6 +16,10 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import AppointmentsPage from "./pages/dashboard/appointments/AppointmentsPage";
 import DocumentsPage from "./pages/dashboard/documents/DocumentsPage";
 import MessagesPage from "./pages/dashboard/messages/MessagesPage";
+import NotificationsPage from "./pages/dashboard/notifications/NotificationsPage";
+import HistoryPage from "./pages/dashboard/history/HistoryPage";
+import PaymentsPage from "./pages/dashboard/payments/PaymentsPage";
+import PrescriptionsPage from "./pages/dashboard/prescriptions/PrescriptionsPage";
 
 const queryClient = new QueryClient();
 
@@ -86,15 +90,7 @@ const App = () => (
               path="/dashboard/notifications"
               element={
                 <ProtectedRoute>
-                  <PatientDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard/profile"
-              element={
-                <ProtectedRoute>
-                  <PatientDashboard />
+                  <NotificationsPage />
                 </ProtectedRoute>
               }
             />
@@ -102,7 +98,7 @@ const App = () => (
               path="/dashboard/history"
               element={
                 <ProtectedRoute>
-                  <PatientDashboard />
+                  <HistoryPage />
                 </ProtectedRoute>
               }
             />
@@ -110,7 +106,7 @@ const App = () => (
               path="/dashboard/prescriptions"
               element={
                 <ProtectedRoute>
-                  <PatientDashboard />
+                  <PrescriptionsPage />
                 </ProtectedRoute>
               }
             />
@@ -118,7 +114,7 @@ const App = () => (
               path="/dashboard/payments"
               element={
                 <ProtectedRoute>
-                  <PatientDashboard />
+                  <PaymentsPage />
                 </ProtectedRoute>
               }
             />
