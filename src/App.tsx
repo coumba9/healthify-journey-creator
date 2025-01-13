@@ -13,6 +13,9 @@ import Login from "./pages/Login";
 import PatientDashboard from "./pages/dashboard/PatientDashboard";
 import DoctorDashboard from "./pages/dashboard/DoctorDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import AppointmentsPage from "./pages/dashboard/appointments/AppointmentsPage";
+import DocumentsPage from "./pages/dashboard/documents/DocumentsPage";
+import MessagesPage from "./pages/dashboard/messages/MessagesPage";
 
 const queryClient = new QueryClient();
 
@@ -59,7 +62,7 @@ const App = () => (
               path="/dashboard/appointments"
               element={
                 <ProtectedRoute>
-                  <PatientDashboard />
+                  <AppointmentsPage />
                 </ProtectedRoute>
               }
             />
@@ -67,7 +70,7 @@ const App = () => (
               path="/dashboard/documents"
               element={
                 <ProtectedRoute>
-                  <PatientDashboard />
+                  <DocumentsPage />
                 </ProtectedRoute>
               }
             />
@@ -75,7 +78,7 @@ const App = () => (
               path="/dashboard/messages"
               element={
                 <ProtectedRoute>
-                  <PatientDashboard />
+                  <MessagesPage />
                 </ProtectedRoute>
               }
             />
