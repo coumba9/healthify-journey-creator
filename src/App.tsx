@@ -30,11 +30,14 @@ import PrescriptionsPage from "./pages/dashboard/prescriptions/PrescriptionsPage
 // Pages du médecin
 import SchedulePage from "./pages/dashboard/doctor/SchedulePage";
 import PatientsPage from "./pages/dashboard/doctor/PatientsPage";
+import AddPatientPage from "./pages/dashboard/doctor/AddPatientPage";
+import MedicalRecordPage from "./pages/dashboard/doctor/MedicalRecordPage";
 
 // Pages de l'administrateur
 import UsersPage from "./pages/dashboard/admin/UsersPage";
 import ServicesPage from "./pages/dashboard/admin/ServicesPage";
 import SettingsPage from "./pages/dashboard/admin/SettingsPage";
+import UserDetailsPage from "./pages/dashboard/admin/UserDetailsPage";
 
 const queryClient = new QueryClient();
 
@@ -157,18 +160,18 @@ const App = () => (
               }
             />
             <Route
-              path="/dashboard/documents"
+              path="/dashboard/patients/add"
               element={
                 <ProtectedRoute allowedRoles={["doctor"]}>
-                  <DocumentsPage />
+                  <AddPatientPage />
                 </ProtectedRoute>
               }
             />
             <Route
-              path="/dashboard/messages"
+              path="/dashboard/patients/:patientId/medical-record"
               element={
                 <ProtectedRoute allowedRoles={["doctor"]}>
-                  <MessagesPage />
+                  <MedicalRecordPage />
                 </ProtectedRoute>
               }
             />
@@ -179,6 +182,14 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <UsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/users/:userId"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <UserDetailsPage />
                 </ProtectedRoute>
               }
             />
