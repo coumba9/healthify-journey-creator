@@ -17,7 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Calendar, Clock, User, CheckCircle2, XCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Appointment {
   id: string;
@@ -57,10 +58,40 @@ const AppointmentList = () => {
   ];
 
   const handleStatusChange = (appointmentId: string, newStatus: "confirmed" | "cancelled") => {
-    toast({
-      title: "Statut mis à jour",
-      description: `Le rendez-vous a été ${newStatus === "confirmed" ? "confirmé" : "annulé"}.`,
-    });
+    // Simuler un délai de traitement
+    setTimeout(() => {
+      toast({
+        title: `Rendez-vous ${newStatus === "confirmed" ? "confirmé" : "annulé"}`,
+        description: `Le rendez-vous a été ${
+          newStatus === "confirmed" ? "confirmé" : "annulé"
+        } avec succès.`,
+        variant: newStatus === "confirmed" ? "default" : "destructive",
+      });
+    }, 500);
+  };
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "cancelled":
+        return "bg-red-100 text-red-800 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return <CheckCircle2 className="h-4 w-4 text-green-600" />;
+      case "cancelled":
+        return <XCircle className="h-4 w-4 text-red-600" />;
+      default:
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+    }
   };
 
   const filteredAppointments = appointments.filter((appointment) => {
@@ -74,8 +105,8 @@ const AppointmentList = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="relative w-64">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             placeholder="Rechercher..."
@@ -84,7 +115,7 @@ const AppointmentList = () => {
             className="pl-10"
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Filter className="h-4 w-4 text-gray-400" />
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[180px]">
@@ -104,63 +135,71 @@ const AppointmentList = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Heure</TableHead>
-              <TableHead>Patient</TableHead>
-              <TableHead>Médecin</TableHead>
+              <TableHead><Calendar className="h-4 w-4 mr-2 inline-block" /> Date</TableHead>
+              <TableHead><Clock className="h-4 w-4 mr-2 inline-block" /> Heure</TableHead>
+              <TableHead><User className="h-4 w-4 mr-2 inline-block" /> Patient</TableHead>
+              <TableHead><User className="h-4 w-4 mr-2 inline-block" /> Médecin</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAppointments.map((appointment) => (
-              <TableRow key={appointment.id}>
-                <TableCell>{appointment.date}</TableCell>
-                <TableCell>{appointment.time}</TableCell>
-                <TableCell>{appointment.patientName}</TableCell>
-                <TableCell>{appointment.doctorName}</TableCell>
-                <TableCell>{appointment.type}</TableCell>
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${
-                      appointment.status === "confirmed"
-                        ? "bg-green-100 text-green-800"
+            <AnimatePresence>
+              {filteredAppointments.map((appointment) => (
+                <motion.tr
+                  key={appointment.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <TableCell>{appointment.date}</TableCell>
+                  <TableCell>{appointment.time}</TableCell>
+                  <TableCell>{appointment.patientName}</TableCell>
+                  <TableCell>{appointment.doctorName}</TableCell>
+                  <TableCell>{appointment.type}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${getStatusBadgeClass(
+                        appointment.status
+                      )}`}
+                    >
+                      {getStatusIcon(appointment.status)}
+                      {appointment.status === "confirmed"
+                        ? "Confirmé"
                         : appointment.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {appointment.status === "confirmed"
-                      ? "Confirmé"
-                      : appointment.status === "pending"
-                      ? "En attente"
-                      : "Annulé"}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    {appointment.status === "pending" && (
-                      <>
-                        <Button
-                          size="sm"
-                          onClick={() => handleStatusChange(appointment.id, "confirmed")}
-                        >
-                          Confirmer
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleStatusChange(appointment.id, "cancelled")}
-                        >
-                          Annuler
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                        ? "En attente"
+                        : "Annulé"}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      {appointment.status === "pending" && (
+                        <>
+                          <Button
+                            size="sm"
+                            className="bg-green-500 hover:bg-green-600"
+                            onClick={() => handleStatusChange(appointment.id, "confirmed")}
+                          >
+                            <CheckCircle2 className="h-4 w-4 mr-1" />
+                            Confirmer
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleStatusChange(appointment.id, "cancelled")}
+                          >
+                            <XCircle className="h-4 w-4 mr-1" />
+                            Annuler
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
           </TableBody>
         </Table>
       </div>
