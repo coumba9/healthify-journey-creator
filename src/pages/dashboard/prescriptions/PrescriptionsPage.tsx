@@ -1,4 +1,5 @@
-import { Pill, Search, Download, Eye } from "lucide-react";
+import { useState } from "react";
+import { Pill, Search, Download, Eye, PenTool } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -9,7 +10,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import SignaturePad from "@/components/prescriptions/SignaturePad";
 
 interface Prescription {
   id: string;
@@ -17,10 +25,13 @@ interface Prescription {
   doctor: string;
   medications: string[];
   status: "active" | "expired" | "pending";
+  signed?: boolean;
 }
 
 const PrescriptionsPage = () => {
-  // Example prescriptions (to be replaced with real data from Supabase later)
+  const [isSignatureDialogOpen, setIsSignatureDialogOpen] = useState(false);
+  const [selectedPrescription, setSelectedPrescription] = useState<string | null>(null);
+
   const prescriptions: Prescription[] = [
     {
       id: "1",
@@ -28,6 +39,7 @@ const PrescriptionsPage = () => {
       doctor: "Dr. Smith",
       medications: ["Paracétamol", "Ibuprofène"],
       status: "active",
+      signed: false,
     },
     {
       id: "2",
@@ -35,6 +47,7 @@ const PrescriptionsPage = () => {
       doctor: "Dr. Johnson",
       medications: ["Amoxicilline"],
       status: "expired",
+      signed: true,
     },
     {
       id: "3",
@@ -42,8 +55,21 @@ const PrescriptionsPage = () => {
       doctor: "Dr. Brown",
       medications: ["Ventoline", "Cortisone"],
       status: "active",
+      signed: false,
     },
   ];
+
+  const handleSignature = (prescriptionId: string) => {
+    setSelectedPrescription(prescriptionId);
+    setIsSignatureDialogOpen(true);
+  };
+
+  const handleSaveSignature = (signatureData: string) => {
+    console.log("Signature saved for prescription:", selectedPrescription);
+    console.log("Signature data:", signatureData);
+    setIsSignatureDialogOpen(false);
+    setSelectedPrescription(null);
+  };
 
   return (
     <DashboardLayout>
@@ -110,16 +136,37 @@ const PrescriptionsPage = () => {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm">
-                      <Eye className="h-4 w-4 mr-1" />
-                      Voir
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="ghost" size="sm">
+                        <Eye className="h-4 w-4 mr-1" />
+                        Voir
+                      </Button>
+                      {!prescription.signed && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSignature(prescription.id)}
+                        >
+                          <PenTool className="h-4 w-4 mr-1" />
+                          Signer
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
+
+        <Dialog open={isSignatureDialogOpen} onOpenChange={setIsSignatureDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Signer l'ordonnance</DialogTitle>
+            </DialogHeader>
+            <SignaturePad onSave={handleSaveSignature} />
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
