@@ -6,49 +6,47 @@ import PatientsPage from "@/pages/dashboard/doctor/PatientsPage";
 import DocumentsPage from "@/pages/dashboard/doctor/DocumentsPage";
 import MessagesPage from "@/pages/dashboard/doctor/MessagesPage";
 
-export const DoctorRoutes = () => {
-  return (
-    <>
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <DoctorDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard/schedule"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <SchedulePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard/patients"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <PatientsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard/documents"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <DocumentsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard/messages"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <MessagesPage />
-          </ProtectedRoute>
-        }
-      />
-    </>
-  );
-};
+export const DoctorRoutes = () => (
+  <>
+    <Route
+      path="/dashboard"
+      element={
+        <ProtectedRoute allowedRoles={["doctor"]}>
+          <DoctorDashboard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/dashboard/schedule"
+      element={
+        <ProtectedRoute allowedRoles={["doctor"]}>
+          <SchedulePage />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/dashboard/patients"
+      element={
+        <ProtectedRoute allowedRoles={["doctor"]}>
+          <PatientsPage />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/dashboard/documents"
+      element={
+        <ProtectedRoute allowedRoles={["doctor"]}>
+          <DocumentsPage />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/dashboard/messages"
+      element={
+        <ProtectedRoute allowedRoles={["doctor"]}>
+          <MessagesPage />
+        </ProtectedRoute>
+      }
+    />
+  </>
+);
