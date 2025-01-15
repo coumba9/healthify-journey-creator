@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 import { PublicRoutes } from "./routes/PublicRoutes";
@@ -20,10 +20,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <PublicRoutes />
-            <PatientRoutes />
-            <DoctorRoutes />
-            <AdminRoutes />
+            <Route>{PublicRoutes()}</Route>
+            <Route>{PatientRoutes()}</Route>
+            <Route>{DoctorRoutes()}</Route>
+            <Route>{AdminRoutes()}</Route>
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
