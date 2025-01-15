@@ -20,10 +20,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <PublicRoutes />
-            <PatientRoutes />
-            <DoctorRoutes />
-            <AdminRoutes />
+            {PublicRoutes()}
+            {PatientRoutes()}
+            {DoctorRoutes()}
+            {AdminRoutes()}
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
