@@ -3,10 +3,8 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DoctorDashboard from "@/pages/dashboard/DoctorDashboard";
 import SchedulePage from "@/pages/dashboard/doctor/SchedulePage";
 import PatientsPage from "@/pages/dashboard/doctor/PatientsPage";
-import AddPatientPage from "@/pages/dashboard/doctor/AddPatientPage";
-import MedicalRecordPage from "@/pages/dashboard/doctor/MedicalRecordPage";
-import AppointmentDetailsPage from "@/pages/dashboard/doctor/AppointmentDetailsPage";
-import AvailabilityPage from "@/pages/dashboard/doctor/AvailabilityPage";
+import DocumentsPage from "@/pages/dashboard/doctor/DocumentsPage";
+import MessagesPage from "@/pages/dashboard/doctor/MessagesPage";
 
 export const DoctorRoutes = () => {
   return (
@@ -36,34 +34,18 @@ export const DoctorRoutes = () => {
         }
       />
       <Route
-        path="/dashboard/patients/add"
+        path="/dashboard/documents"
         element={
           <ProtectedRoute allowedRoles={["doctor"]}>
-            <AddPatientPage />
+            <DocumentsPage />
           </ProtectedRoute>
         }
       />
       <Route
-        path="/dashboard/patients/:patientId/medical-record"
+        path="/dashboard/messages"
         element={
           <ProtectedRoute allowedRoles={["doctor"]}>
-            <MedicalRecordPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard/appointments/:appointmentId"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <AppointmentDetailsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard/availability"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <AvailabilityPage />
+            <MessagesPage />
           </ProtectedRoute>
         }
       />
