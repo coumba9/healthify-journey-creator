@@ -6,9 +6,9 @@ import PatientsPage from "@/pages/dashboard/doctor/PatientsPage";
 import DocumentsPage from "@/pages/dashboard/doctor/DocumentsPage";
 import MessagesPage from "@/pages/dashboard/doctor/MessagesPage";
 
-export const DoctorRoutes = () => [
+const DoctorRoutes = [
   <Route
-    key="/dashboard"
+    key="doctor-dashboard"
     path="/dashboard"
     element={
       <ProtectedRoute allowedRoles={["doctor"]}>
@@ -17,7 +17,7 @@ export const DoctorRoutes = () => [
     }
   />,
   <Route
-    key="/dashboard/schedule"
+    key="doctor-schedule"
     path="/dashboard/schedule"
     element={
       <ProtectedRoute allowedRoles={["doctor"]}>
@@ -26,7 +26,7 @@ export const DoctorRoutes = () => [
     }
   />,
   <Route
-    key="/dashboard/patients"
+    key="doctor-patients"
     path="/dashboard/patients"
     element={
       <ProtectedRoute allowedRoles={["doctor"]}>
@@ -35,7 +35,7 @@ export const DoctorRoutes = () => [
     }
   />,
   <Route
-    key="/dashboard/documents"
+    key="doctor-documents"
     path="/dashboard/documents"
     element={
       <ProtectedRoute allowedRoles={["doctor"]}>
@@ -44,7 +44,7 @@ export const DoctorRoutes = () => [
     }
   />,
   <Route
-    key="/dashboard/messages"
+    key="doctor-messages"
     path="/dashboard/messages"
     element={
       <ProtectedRoute allowedRoles={["doctor"]}>
@@ -53,3 +53,5 @@ export const DoctorRoutes = () => [
     }
   />
 ];
+
+export default DoctorRoutes;
