@@ -3,15 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const DoctorDashboard = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleAction = (action: string) => {
-    toast({
-      title: `Action ${action}`,
-      description: `L'action a été effectuée avec succès.`,
-    });
+  const handleViewDetails = (appointmentId: string) => {
+    navigate(`/dashboard/appointments/${appointmentId}`);
+  };
+
+  const handleManageAvailability = () => {
+    navigate("/dashboard/availability");
   };
 
   return (
@@ -29,7 +32,12 @@ const DoctorDashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Patients du jour</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>Patients du jour</CardTitle>
+              <Button onClick={handleManageAvailability}>
+                Gérer disponibilités
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -42,58 +50,14 @@ const DoctorDashboard = () => {
                     <p className="font-medium">Patient {id}</p>
                     <p className="text-sm text-gray-600">14:00 - Consultation</p>
                   </div>
-                  <div className="space-x-2">
-                    <Button
-                      size="sm"
-                      onClick={() => handleAction("consultation démarrée")}
-                    >
-                      Démarrer
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleAction("reportée")}
-                    >
-                      Reporter
-                    </Button>
-                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => handleViewDetails(id.toString())}
+                  >
+                    Voir détails
+                  </Button>
                 </div>
               ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Statistiques</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 border rounded">
-                <p className="text-sm text-gray-600">Consultations aujourd'hui</p>
-                <p className="text-2xl font-bold">8</p>
-              </div>
-              <div className="p-4 border rounded">
-                <p className="text-sm text-gray-600">Patients en attente</p>
-                <p className="text-2xl font-bold">3</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Documents à signer</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 border rounded flex justify-between items-center">
-                <div>
-                  <p className="font-medium">Ordonnance - Patient 1</p>
-                  <p className="text-sm text-gray-600">En attente de signature</p>
-                </div>
-                <Button size="sm">Signer</Button>
-              </div>
             </div>
           </CardContent>
         </Card>
