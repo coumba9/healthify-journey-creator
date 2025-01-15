@@ -6,7 +6,7 @@ import PatientsPage from "@/pages/dashboard/doctor/PatientsPage";
 import DocumentsPage from "@/pages/dashboard/doctor/DocumentsPage";
 import MessagesPage from "@/pages/dashboard/doctor/MessagesPage";
 
-const DoctorRoutes = [
+export const DoctorRoutes = () => [
   <Route
     key="doctor-dashboard"
     path="/dashboard"
@@ -53,5 +53,3 @@ const DoctorRoutes = [
     }
   />
 ];
-
-export default DoctorRoutes;
