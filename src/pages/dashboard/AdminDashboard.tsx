@@ -1,68 +1,103 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import DashboardStats from "@/components/dashboard/stats/DashboardStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
-import { Users, Settings, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
-
-  const quickActions = [
-    {
-      title: "Gestion des utilisateurs",
-      icon: Users,
-      description: "Gérer les comptes des patients et médecins",
-      link: "/dashboard/users",
-    },
-    {
-      title: "Services médicaux",
-      icon: FileText,
-      description: "Configurer les services disponibles",
-      link: "/dashboard/services",
-    },
-    {
-      title: "Paramètres",
-      icon: Settings,
-      description: "Configurer les paramètres du système",
-      link: "/dashboard/settings",
-    },
-  ];
-
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Tableau de bord Administrateur</h1>
-          <span className="text-gray-500">
-            Bienvenue, {user?.name || user?.email}
-          </span>
-        </div>
+      <h1 className="text-3xl font-bold mb-8">Tableau de bord Administrateur</h1>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Statistiques Globales</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Total Utilisateurs</p>
+                <p className="text-2xl font-bold">150</p>
+              </div>
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Rendez-vous Aujourd'hui</p>
+                <p className="text-2xl font-bold">45</p>
+              </div>
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Médecins Actifs</p>
+                <p className="text-2xl font-bold">10</p>
+              </div>
+              <div className="p-4 border rounded">
+                <p className="text-sm text-gray-600">Nouveaux Patients</p>
+                <p className="text-2xl font-bold">25</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        <DashboardStats />
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {quickActions.map((action) => (
-            <Card key={action.title}>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <action.icon className="h-5 w-5 text-primary" />
-                  <CardTitle className="text-lg">{action.title}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">{action.description}</p>
-                <Link
-                  to={action.link}
-                  className="text-primary hover:underline inline-flex items-center gap-2"
+        <Card>
+          <CardHeader>
+            <CardTitle>Gestion des Services</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {["Cardiologie", "Pédiatrie", "Neurologie"].map((service) => (
+                <div
+                  key={service}
+                  className="flex justify-between items-center p-4 border rounded"
                 >
-                  Accéder
-                  <span className="text-lg">→</span>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  <span>{service}</span>
+                  <Button variant="outline" size="sm">
+                    Gérer
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Dernières Activités</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                "Nouveau médecin inscrit",
+                "Mise à jour du planning",
+                "Maintenance système",
+              ].map((activity, index) => (
+                <div key={index} className="p-4 border rounded">
+                  <p className="font-medium">{activity}</p>
+                  <p className="text-sm text-gray-600">Il y a 2 heures</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Configuration Système</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                "Sauvegardes",
+                "Notifications",
+                "Paramètres de sécurité",
+              ].map((setting, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center p-4 border rounded"
+                >
+                  <span>{setting}</span>
+                  <Button variant="outline" size="sm">
+                    Configurer
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

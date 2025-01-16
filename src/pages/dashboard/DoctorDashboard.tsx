@@ -1,30 +1,64 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import DashboardStats from "@/components/dashboard/stats/DashboardStats";
-import AppointmentList from "@/components/dashboard/appointments/AppointmentList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const DoctorDashboard = () => {
-  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleViewDetails = (appointmentId: string) => {
+    navigate(`/dashboard/appointments/${appointmentId}`);
+  };
+
+  const handleManageAvailability = () => {
+    navigate("/dashboard/availability");
+  };
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Tableau de bord Médecin</h1>
-          <span className="text-gray-500">
-            Bienvenue, Dr. {user?.name || user?.email}
-          </span>
-        </div>
-
-        <DashboardStats />
+      <h1 className="text-3xl font-bold mb-8">Tableau de bord Médecin</h1>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Planning du jour</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Calendar mode="single" className="rounded-md border" />
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Rendez-vous à venir</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>Patients du jour</CardTitle>
+              <Button onClick={handleManageAvailability}>
+                Gérer disponibilités
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <AppointmentList />
+            <div className="space-y-4">
+              {[1, 2].map((id) => (
+                <div
+                  key={id}
+                  className="p-4 border rounded flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-medium">Patient {id}</p>
+                    <p className="text-sm text-gray-600">14:00 - Consultation</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => handleViewDetails(id.toString())}
+                  >
+                    Voir détails
+                  </Button>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
