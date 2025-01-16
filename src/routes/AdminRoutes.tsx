@@ -7,7 +7,7 @@ import SettingsPage from "@/pages/dashboard/admin/SettingsPage";
 
 export const AdminRoutes = () => [
   <Route
-    key="/dashboard"
+    key="admin-dashboard"
     path="/dashboard"
     element={
       <ProtectedRoute allowedRoles={["admin"]}>
@@ -16,7 +16,7 @@ export const AdminRoutes = () => [
     }
   />,
   <Route
-    key="/dashboard/users"
+    key="admin-users"
     path="/dashboard/users"
     element={
       <ProtectedRoute allowedRoles={["admin"]}>
@@ -25,7 +25,7 @@ export const AdminRoutes = () => [
     }
   />,
   <Route
-    key="/dashboard/services"
+    key="admin-services"
     path="/dashboard/services"
     element={
       <ProtectedRoute allowedRoles={["admin"]}>
@@ -34,7 +34,7 @@ export const AdminRoutes = () => [
     }
   />,
   <Route
-    key="/dashboard/settings"
+    key="admin-settings"
     path="/dashboard/settings"
     element={
       <ProtectedRoute allowedRoles={["admin"]}>
