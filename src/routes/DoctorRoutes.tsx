@@ -1,6 +1,6 @@
 import { Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import DoctorDashboard from "@/pages/dashboard/DoctorDashboard";
+import DoctorDashboard from "@/pages/dashboard/doctor/DoctorDashboard";
 import SchedulePage from "@/pages/dashboard/doctor/SchedulePage";
 import PatientsPage from "@/pages/dashboard/doctor/PatientsPage";
 import DocumentsPage from "@/pages/dashboard/doctor/DocumentsPage";
