@@ -39,8 +39,8 @@ const DashboardNav = () => {
           { title: "Accueil", icon: Home, url: "/dashboard" },
           { title: "Planning", icon: Calendar, url: "/dashboard/schedule" },
           { title: "Patients", icon: Users, url: "/dashboard/patients" },
-          { title: "Documents", icon: FileText, url: "/dashboard/documents" },
-          { title: "Messages", icon: MessageSquare, url: "/dashboard/messages" },
+          { title: "Documents", icon: FileText, url: "/dashboard/doctor/documents" },
+          { title: "Messages", icon: MessageSquare, url: "/dashboard/doctor/messages" },
         ];
       case "admin":
         return [

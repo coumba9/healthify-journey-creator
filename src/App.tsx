@@ -231,6 +231,24 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+
+            {/* Routes du médecin */}
+            <Route
+              path="/dashboard/doctor/documents"
+              element={
+                <ProtectedRoute allowedRoles={["doctor"]}>
+                  <DocumentsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/doctor/messages"
+              element={
+                <ProtectedRoute allowedRoles={["doctor"]}>
+                  <MessagesPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
