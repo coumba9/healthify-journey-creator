@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Table,
   TableBody,
@@ -42,6 +43,7 @@ interface Appointment {
   id: string;
   date: string;
   time: string;
+  patientId: string;
   patientName: string;
   doctorName: string;
   status: "pending" | "confirmed" | "cancelled";
@@ -55,25 +57,27 @@ interface Appointment {
 }
 
 const AppointmentList = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"date" | "status">("date");
 
-  // Exemple de données enrichies
+  // Exemple de données enrichies - Dans un cas réel, ces données viendraient d'une API
   const appointments: Appointment[] = [
     {
       id: "1",
       date: "2024-03-20",
       time: "09:00",
-      patientName: "Jean Dupont",
+      patientId: "1", // ID correspondant à l'utilisateur connecté
+      patientName: user?.name || "Non spécifié",
       doctorName: "Dr. Smith",
       status: "confirmed",
       type: "Consultation",
       location: "Cabinet 3, 2ème étage",
       contactInfo: {
-        phone: "0123456789",
-        email: "jean.dupont@email.com"
+        phone: user?.phone || "Non spécifié",
+        email: user?.email || "Non spécifié"
       },
       notes: "Apporter les résultats d'analyse"
     },
@@ -81,6 +85,7 @@ const AppointmentList = () => {
       id: "2",
       date: "2024-03-21",
       time: "10:30",
+      patientId: "2",
       patientName: "Marie Martin",
       doctorName: "Dr. Johnson",
       status: "pending",
@@ -92,6 +97,11 @@ const AppointmentList = () => {
       }
     }
   ];
+
+  // Filtrer les rendez-vous pour n'afficher que ceux de l'utilisateur connecté
+  const userAppointments = appointments.filter(
+    (appointment) => appointment.patientId === user?.id
+  );
 
   const handleStatusChange = (appointmentId: string, newStatus: "confirmed" | "cancelled") => {
     toast({
@@ -125,10 +135,9 @@ const AppointmentList = () => {
     }
   };
 
-  const filteredAppointments = appointments
+  const filteredAppointments = userAppointments
     .filter((appointment) => {
       const matchesSearch =
-        appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         appointment.doctorName.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === "all" || appointment.status === statusFilter;
       return matchesSearch && matchesStatus;
@@ -147,7 +156,7 @@ const AppointmentList = () => {
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
-            placeholder="Rechercher un patient ou médecin..."
+            placeholder="Rechercher un médecin..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -194,9 +203,6 @@ const AppointmentList = () => {
                 <Clock className="h-4 w-4 mr-2 inline-block" /> Heure
               </TableHead>
               <TableHead>
-                <User className="h-4 w-4 mr-2 inline-block" /> Patient
-              </TableHead>
-              <TableHead>
                 <User className="h-4 w-4 mr-2 inline-block" /> Médecin
               </TableHead>
               <TableHead>Type</TableHead>
@@ -218,43 +224,6 @@ const AppointmentList = () => {
                 >
                   <TableCell>{new Date(appointment.date).toLocaleDateString()}</TableCell>
                   <TableCell>{appointment.time}</TableCell>
-                  <TableCell>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div className="flex items-center gap-2">
-                            <span>{appointment.patientName}</span>
-                            {appointment.contactInfo && (
-                              <div className="flex gap-1">
-                                {appointment.contactInfo.phone && (
-                                  <Phone className="h-4 w-4 text-gray-400" />
-                                )}
-                                {appointment.contactInfo.email && (
-                                  <Mail className="h-4 w-4 text-gray-400" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="space-y-2">
-                            {appointment.contactInfo?.phone && (
-                              <p className="flex items-center gap-2">
-                                <Phone className="h-4 w-4" />
-                                {appointment.contactInfo.phone}
-                              </p>
-                            )}
-                            {appointment.contactInfo?.email && (
-                              <p className="flex items-center gap-2">
-                                <Mail className="h-4 w-4" />
-                                {appointment.contactInfo.email}
-                              </p>
-                            )}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
                   <TableCell>{appointment.doctorName}</TableCell>
                   <TableCell>{appointment.type}</TableCell>
                   <TableCell>
