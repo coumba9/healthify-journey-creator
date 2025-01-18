@@ -8,36 +8,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { 
-  Search, 
-  Filter, 
-  Calendar, 
-  Clock, 
-  User, 
-  CheckCircle2, 
-  XCircle,
-  MapPin,
-  Phone,
-  Mail,
-  AlertCircle
-} from "lucide-react";
+import { Calendar, Clock, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import AppointmentFilters from "./AppointmentFilters";
+import AppointmentStatus from "./AppointmentStatus";
+import AppointmentActions from "./AppointmentActions";
+import AppointmentDetails from "./AppointmentDetails";
 
 interface Appointment {
   id: string;
@@ -58,7 +34,6 @@ interface Appointment {
 
 const AppointmentList = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"date" | "status">("date");
@@ -103,43 +78,13 @@ const AppointmentList = () => {
     (appointment) => appointment.patientId === user?.id
   );
 
-  const handleStatusChange = (appointmentId: string, newStatus: "confirmed" | "cancelled") => {
-    toast({
-      title: `Rendez-vous ${newStatus === "confirmed" ? "confirmé" : "annulé"}`,
-      description: `Le rendez-vous a été ${newStatus === "confirmed" ? "confirmé" : "annulé"} avec succès.`,
-      variant: newStatus === "confirmed" ? "default" : "destructive",
-    });
-  };
-
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case "confirmed":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "cancelled":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "confirmed":
-        return <CheckCircle2 className="h-4 w-4 text-green-600" />;
-      case "cancelled":
-        return <XCircle className="h-4 w-4 text-red-600" />;
-      default:
-        return <Clock className="h-4 w-4 text-yellow-600" />;
-    }
-  };
-
   const filteredAppointments = userAppointments
     .filter((appointment) => {
-      const matchesSearch =
-        appointment.doctorName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter === "all" || appointment.status === statusFilter;
+      const matchesSearch = appointment.doctorName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "all" || appointment.status === statusFilter;
       return matchesSearch && matchesStatus;
     })
     .sort((a, b) => {
@@ -152,45 +97,14 @@ const AppointmentList = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="relative w-full sm:w-64">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Rechercher un médecin..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <div className="flex items-center gap-4 w-full sm:w-auto">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-400" />
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filtrer par statut" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les statuts</SelectItem>
-                <SelectItem value="pending">En attente</SelectItem>
-                <SelectItem value="confirmed">Confirmé</SelectItem>
-                <SelectItem value="cancelled">Annulé</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-400" />
-            <Select value={sortBy} onValueChange={(value: "date" | "status") => setSortBy(value)}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Trier par" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="date">Date</SelectItem>
-                <SelectItem value="status">Statut</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
+      <AppointmentFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
 
       <div className="rounded-md border overflow-hidden">
         <Table>
@@ -222,77 +136,26 @@ const AppointmentList = () => {
                   transition={{ duration: 0.2 }}
                   className="hover:bg-gray-50"
                 >
-                  <TableCell>{new Date(appointment.date).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {new Date(appointment.date).toLocaleDateString()}
+                  </TableCell>
                   <TableCell>{appointment.time}</TableCell>
                   <TableCell>{appointment.doctorName}</TableCell>
                   <TableCell>{appointment.type}</TableCell>
                   <TableCell>
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${getStatusBadgeClass(
-                        appointment.status
-                      )}`}
-                    >
-                      {getStatusIcon(appointment.status)}
-                      {appointment.status === "confirmed"
-                        ? "Confirmé"
-                        : appointment.status === "pending"
-                        ? "En attente"
-                        : "Annulé"}
-                    </span>
+                    <AppointmentStatus status={appointment.status} />
                   </TableCell>
                   <TableCell>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-gray-400" />
-                            {appointment.notes && (
-                              <AlertCircle className="h-4 w-4 text-yellow-500" />
-                            )}
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="space-y-2">
-                            {appointment.location && (
-                              <p className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4" />
-                                {appointment.location}
-                              </p>
-                            )}
-                            {appointment.notes && (
-                              <p className="flex items-center gap-2">
-                                <AlertCircle className="h-4 w-4" />
-                                {appointment.notes}
-                              </p>
-                            )}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <AppointmentDetails
+                      location={appointment.location}
+                      notes={appointment.notes}
+                    />
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
-                      {appointment.status === "pending" && (
-                        <>
-                          <Button
-                            size="sm"
-                            className="bg-green-500 hover:bg-green-600"
-                            onClick={() => handleStatusChange(appointment.id, "confirmed")}
-                          >
-                            <CheckCircle2 className="h-4 w-4 mr-1" />
-                            Confirmer
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleStatusChange(appointment.id, "cancelled")}
-                          >
-                            <XCircle className="h-4 w-4 mr-1" />
-                            Annuler
-                          </Button>
-                        </>
-                      )}
-                    </div>
+                    <AppointmentActions
+                      appointmentId={appointment.id}
+                      status={appointment.status}
+                    />
                   </TableCell>
                 </motion.tr>
               ))}
