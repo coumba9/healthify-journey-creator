@@ -8,12 +8,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Calendar, Clock, User } from "lucide-react";
+import { Calendar, Clock, User, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AppointmentFilters from "./AppointmentFilters";
 import AppointmentStatus from "./AppointmentStatus";
 import AppointmentActions from "./AppointmentActions";
 import AppointmentDetails from "./AppointmentDetails";
+import AppointmentTicket from "@/components/appointment/AppointmentTicket";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface Appointment {
   id: string;
@@ -30,6 +37,7 @@ interface Appointment {
     email?: string;
   };
   notes?: string;
+  speciality?: string;
 }
 
 const AppointmentList = () => {
@@ -44,12 +52,13 @@ const AppointmentList = () => {
       id: "1",
       date: "2024-03-20",
       time: "09:00",
-      patientId: "1", // ID correspondant à l'utilisateur connecté
+      patientId: user?.id || "",
       patientName: user?.name || "Non spécifié",
       doctorName: "Dr. Smith",
       status: "confirmed",
       type: "Consultation",
       location: "Cabinet 3, 2ème étage",
+      speciality: "Cardiologie",
       contactInfo: {
         phone: user?.phone || "Non spécifié",
         email: user?.email || "Non spécifié"
@@ -60,15 +69,16 @@ const AppointmentList = () => {
       id: "2",
       date: "2024-03-21",
       time: "10:30",
-      patientId: "2",
-      patientName: "Marie Martin",
+      patientId: user?.id || "",
+      patientName: user?.name || "Non spécifié",
       doctorName: "Dr. Johnson",
       status: "pending",
       type: "Suivi",
       location: "Cabinet 5, 1er étage",
+      speciality: "Généraliste",
       contactInfo: {
-        phone: "0987654321",
-        email: "marie.martin@email.com"
+        phone: user?.phone || "Non spécifié",
+        email: user?.email || "Non spécifié"
       }
     }
   ];
@@ -123,6 +133,7 @@ const AppointmentList = () => {
               <TableHead>Statut</TableHead>
               <TableHead>Détails</TableHead>
               <TableHead>Actions</TableHead>
+              <TableHead>Ticket</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -156,6 +167,21 @@ const AppointmentList = () => {
                       appointmentId={appointment.id}
                       status={appointment.status}
                     />
+                  </TableCell>
+                  <TableCell>
+                    {appointment.status === "confirmed" && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <FileText className="h-4 w-4 mr-2" />
+                            Voir ticket
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <AppointmentTicket appointment={appointment} />
+                        </DialogContent>
+                      </Dialog>
+                    )}
                   </TableCell>
                 </motion.tr>
               ))}
