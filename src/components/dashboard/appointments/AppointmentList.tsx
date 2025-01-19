@@ -10,18 +10,15 @@ import {
 } from "@/components/ui/table";
 import { Calendar, Clock, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import AppointmentTabs from "./AppointmentTabs";
 import AppointmentFilters from "./AppointmentFilters";
 import AppointmentStatus from "./AppointmentStatus";
 import AppointmentActions from "./AppointmentActions";
 import AppointmentDetails from "./AppointmentDetails";
 import AppointmentTicket from "@/components/appointment/AppointmentTicket";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Appointment {
   id: string;
@@ -84,12 +81,10 @@ const AppointmentList = () => {
     }
   ];
 
-  // Filtrer les rendez-vous pour n'afficher que ceux de l'utilisateur connecté
   const userAppointments = appointments.filter(
     (appointment) => appointment.patientId === user?.id
   );
 
-  // Filtrer les rendez-vous confirmés
   const confirmedAppointments = userAppointments.filter(
     (appointment) => appointment.status === "confirmed"
   );
@@ -111,7 +106,6 @@ const AppointmentList = () => {
       }
     });
 
-  // Composant réutilisable pour afficher le ticket
   const TicketDialog = ({ appointment }: { appointment: Appointment }) => (
     <Dialog>
       <DialogTrigger asChild>
@@ -136,14 +130,7 @@ const AppointmentList = () => {
         setSortBy={setSortBy}
       />
 
-      <Tabs defaultValue="upcoming" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="upcoming">Prochains rendez-vous</TabsTrigger>
-          <TabsTrigger value="new">Nouveau rendez-vous</TabsTrigger>
-          <TabsTrigger value="tickets">Mes tickets</TabsTrigger>
-          <TabsTrigger value="preferences">Préférences de rappel</TabsTrigger>
-        </TabsList>
-
+      <AppointmentTabs>
         <TabsContent value="upcoming">
           <div className="rounded-md border overflow-hidden">
             <Table>
@@ -228,7 +215,7 @@ const AppointmentList = () => {
         <TabsContent value="preferences">
           {/* Preferences content goes here */}
         </TabsContent>
-      </Tabs>
+      </AppointmentTabs>
     </div>
   );
 };
