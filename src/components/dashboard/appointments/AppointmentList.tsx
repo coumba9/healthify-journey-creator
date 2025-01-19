@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Calendar, Clock, User, FileText } from "lucide-react";
+import { Calendar, Clock, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AppointmentFilters from "./AppointmentFilters";
 import AppointmentStatus from "./AppointmentStatus";
@@ -32,13 +32,13 @@ interface Appointment {
   doctorName: string;
   status: "pending" | "confirmed" | "cancelled";
   type: string;
-  location: string; // Changed from optional to required
+  location: string;
   contactInfo?: {
     phone?: string;
     email?: string;
   };
   notes?: string;
-  speciality: string; // Changed from optional to required
+  speciality: string;
 }
 
 const AppointmentList = () => {
@@ -89,7 +89,7 @@ const AppointmentList = () => {
     (appointment) => appointment.patientId === user?.id
   );
 
-  // Filtrer les rendez-vous confirmés pour l'onglet "Mon ticket"
+  // Filtrer les rendez-vous confirmés
   const confirmedAppointments = userAppointments.filter(
     (appointment) => appointment.status === "confirmed"
   );
@@ -110,6 +110,20 @@ const AppointmentList = () => {
         return a.status.localeCompare(b.status);
       }
     });
+
+  // Composant réutilisable pour afficher le ticket
+  const TicketDialog = ({ appointment }: { appointment: Appointment }) => (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          Voir ticket
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <AppointmentTicket appointment={appointment} />
+      </DialogContent>
+    </Dialog>
+  );
 
   return (
     <div className="space-y-4">
@@ -185,17 +199,7 @@ const AppointmentList = () => {
                       </TableCell>
                       <TableCell>
                         {appointment.status === "confirmed" && (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <FileText className="h-4 w-4 mr-2" />
-                                Voir ticket
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <AppointmentTicket appointment={appointment} />
-                            </DialogContent>
-                          </Dialog>
+                          <TicketDialog appointment={appointment} />
                         )}
                       </TableCell>
                     </motion.tr>
@@ -209,7 +213,9 @@ const AppointmentList = () => {
         <TabsContent value="tickets">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {confirmedAppointments.map((appointment) => (
-              <AppointmentTicket key={appointment.id} appointment={appointment} />
+              <div key={appointment.id}>
+                <AppointmentTicket appointment={appointment} />
+              </div>
             ))}
             {confirmedAppointments.length === 0 && (
               <p className="text-center col-span-full text-gray-500">
