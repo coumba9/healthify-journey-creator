@@ -8,17 +8,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Calendar, Clock, User } from "lucide-react";
+import { Calendar, Clock, User, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import AppointmentTabs from "./AppointmentTabs";
 import AppointmentFilters from "./AppointmentFilters";
 import AppointmentStatus from "./AppointmentStatus";
 import AppointmentActions from "./AppointmentActions";
 import AppointmentDetails from "./AppointmentDetails";
 import AppointmentTicket from "@/components/appointment/AppointmentTicket";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Appointment {
   id: string;
@@ -29,13 +32,13 @@ interface Appointment {
   doctorName: string;
   status: "pending" | "confirmed" | "cancelled";
   type: string;
-  location: string;
+  location: string; // Changed from optional to required
   contactInfo?: {
     phone?: string;
     email?: string;
   };
   notes?: string;
-  speciality: string;
+  speciality: string; // Changed from optional to required
 }
 
 const AppointmentList = () => {
@@ -81,10 +84,12 @@ const AppointmentList = () => {
     }
   ];
 
+  // Filtrer les rendez-vous pour n'afficher que ceux de l'utilisateur connecté
   const userAppointments = appointments.filter(
     (appointment) => appointment.patientId === user?.id
   );
 
+  // Filtrer les rendez-vous confirmés pour l'onglet "Mon ticket"
   const confirmedAppointments = userAppointments.filter(
     (appointment) => appointment.status === "confirmed"
   );
@@ -106,19 +111,6 @@ const AppointmentList = () => {
       }
     });
 
-  const TicketDialog = ({ appointment }: { appointment: Appointment }) => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          Voir ticket
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <AppointmentTicket appointment={appointment} />
-      </DialogContent>
-    </Dialog>
-  );
-
   return (
     <div className="space-y-4">
       <AppointmentFilters
@@ -130,7 +122,14 @@ const AppointmentList = () => {
         setSortBy={setSortBy}
       />
 
-      <AppointmentTabs>
+      <Tabs defaultValue="upcoming" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="upcoming">Prochains rendez-vous</TabsTrigger>
+          <TabsTrigger value="new">Nouveau rendez-vous</TabsTrigger>
+          <TabsTrigger value="tickets">Mes tickets</TabsTrigger>
+          <TabsTrigger value="preferences">Préférences de rappel</TabsTrigger>
+        </TabsList>
+
         <TabsContent value="upcoming">
           <div className="rounded-md border overflow-hidden">
             <Table>
@@ -186,7 +185,17 @@ const AppointmentList = () => {
                       </TableCell>
                       <TableCell>
                         {appointment.status === "confirmed" && (
-                          <TicketDialog appointment={appointment} />
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <FileText className="h-4 w-4 mr-2" />
+                                Voir ticket
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <AppointmentTicket appointment={appointment} />
+                            </DialogContent>
+                          </Dialog>
                         )}
                       </TableCell>
                     </motion.tr>
@@ -200,9 +209,7 @@ const AppointmentList = () => {
         <TabsContent value="tickets">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {confirmedAppointments.map((appointment) => (
-              <div key={appointment.id}>
-                <AppointmentTicket appointment={appointment} />
-              </div>
+              <AppointmentTicket key={appointment.id} appointment={appointment} />
             ))}
             {confirmedAppointments.length === 0 && (
               <p className="text-center col-span-full text-gray-500">
@@ -215,7 +222,7 @@ const AppointmentList = () => {
         <TabsContent value="preferences">
           {/* Preferences content goes here */}
         </TabsContent>
-      </AppointmentTabs>
+      </Tabs>
     </div>
   );
 };
