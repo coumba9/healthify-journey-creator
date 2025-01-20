@@ -36,7 +36,7 @@ const AppointmentsPage = () => {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="upcoming">Prochains rendez-vous</TabsTrigger>
             <TabsTrigger value="new">Nouveau rendez-vous</TabsTrigger>
-            <TabsTrigger value="tickets">Mes tickets</TabsTrigger>
+            <TabsTrigger value="tickets">Mes Tickets</TabsTrigger>
             <TabsTrigger value="preferences">Préférences de rappel</TabsTrigger>
           </TabsList>
 
