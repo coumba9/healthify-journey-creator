@@ -7,15 +7,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 
 const AppointmentsPage = () => {
-  // Exemple de données de rendez-vous (à remplacer par des vraies données)
-  const nextAppointment = {
-    id: "1",
-    date: "20 Mars 2024",
-    time: "14:00",
-    doctorName: "Dr. Smith",
-    location: "Cabinet Medical Central",
-    speciality: "Cardiologie"
-  };
+  // Exemple de données de rendez-vous confirmés (à remplacer par des vraies données)
+  const confirmedAppointments = [
+    {
+      id: "1",
+      date: "20 Mars 2024",
+      time: "14:00",
+      doctorName: "Dr. Smith",
+      location: "Cabinet Medical Central",
+      speciality: "Cardiologie"
+    },
+    {
+      id: "2",
+      date: "25 Mars 2024",
+      time: "10:30",
+      doctorName: "Dr. Johnson",
+      location: "Clinique du Centre",
+      speciality: "Dermatologie"
+    }
+  ];
 
   return (
     <DashboardLayout>
@@ -26,7 +36,7 @@ const AppointmentsPage = () => {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="upcoming">Prochains rendez-vous</TabsTrigger>
             <TabsTrigger value="new">Nouveau rendez-vous</TabsTrigger>
-            <TabsTrigger value="ticket">Mon ticket</TabsTrigger>
+            <TabsTrigger value="tickets">Mes tickets</TabsTrigger>
             <TabsTrigger value="preferences">Préférences de rappel</TabsTrigger>
           </TabsList>
 
@@ -42,9 +52,20 @@ const AppointmentsPage = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="ticket">
-            <div className="grid gap-6">
-              <AppointmentTicket appointment={nextAppointment} />
+          <TabsContent value="tickets">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {confirmedAppointments.length > 0 ? (
+                confirmedAppointments.map((appointment) => (
+                  <AppointmentTicket 
+                    key={appointment.id} 
+                    appointment={appointment} 
+                  />
+                ))
+              ) : (
+                <p className="text-center col-span-full text-gray-500">
+                  Aucun ticket de rendez-vous confirmé disponible
+                </p>
+              )}
             </div>
           </TabsContent>
 
