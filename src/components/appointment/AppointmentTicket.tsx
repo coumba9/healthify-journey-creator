@@ -9,8 +9,8 @@ interface AppointmentTicketProps {
     date: string;
     time: string;
     doctorName: string;
-    location: string;
-    speciality: string;
+    location?: string;
+    speciality?: string;
   };
 }
 
@@ -45,12 +45,16 @@ const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
           <div className="flex items-center gap-2 text-gray-700">
             <User className="h-5 w-5 text-primary-600" />
             <span>Dr. {appointment.doctorName}</span>
-            <span className="text-sm text-gray-500">({appointment.speciality})</span>
+            {appointment.speciality && (
+              <span className="text-sm text-gray-500">({appointment.speciality})</span>
+            )}
           </div>
-          <div className="flex items-center gap-2 text-gray-700">
-            <MapPin className="h-5 w-5 text-primary-600" />
-            <span>{appointment.location}</span>
-          </div>
+          {appointment.location && (
+            <div className="flex items-center gap-2 text-gray-700">
+              <MapPin className="h-5 w-5 text-primary-600" />
+              <span>{appointment.location}</span>
+            </div>
+          )}
         </div>
         <Button 
           onClick={handleDownload}
