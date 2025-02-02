@@ -43,6 +43,9 @@ import ServicesPage from "./pages/dashboard/admin/ServicesPage";
 import SettingsPage from "./pages/dashboard/admin/SettingsPage";
 import UserDetailsPage from "./pages/dashboard/admin/UserDetailsPage";
 
+// Nouvelle page de recherche de professionnels
+import SearchProfessionals from "./pages/SearchProfessionals";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -60,14 +63,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/contact" element={<Contact />} />
-            <Route
-              path="/services"
-              element={
-                <ProtectedRoute>
-                  <Services />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/search-professionals" element={<SearchProfessionals />} />
 
             {/* Route du tableau de bord */}
             <Route
