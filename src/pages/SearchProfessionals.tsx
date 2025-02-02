@@ -31,8 +31,8 @@ interface Doctor {
 const SearchProfessionals = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSpecialty, setSelectedSpecialty] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedSpecialty, setSelectedSpecialty] = useState("all");
+  const [selectedLocation, setSelectedLocation] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [minRating, setMinRating] = useState(0);
@@ -75,10 +75,10 @@ const SearchProfessionals = () => {
           doctor.specialty.toLowerCase().includes(searchValue.toLowerCase());
 
         const matchesSpecialty =
-          !selectedSpecialty || doctor.specialty === selectedSpecialty;
+          selectedSpecialty === "all" || doctor.specialty === selectedSpecialty;
 
         const matchesLocation =
-          !selectedLocation || doctor.location === selectedLocation;
+          selectedLocation === "all" || doctor.location === selectedLocation;
 
         const matchesPrice =
           doctor.price >= priceRange[0] && doctor.price <= priceRange[1];
@@ -131,7 +131,6 @@ const SearchProfessionals = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Filtres */}
         <Card className="md:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -162,7 +161,7 @@ const SearchProfessionals = () => {
                   <SelectValue placeholder="Choisir une spécialité" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toutes les spécialités</SelectItem>
+                  <SelectItem value="all">Toutes les spécialités</SelectItem>
                   <SelectItem value="cardiologie">Cardiologie</SelectItem>
                   <SelectItem value="pediatrie">Pédiatrie</SelectItem>
                   <SelectItem value="dermatologie">Dermatologie</SelectItem>
@@ -183,7 +182,7 @@ const SearchProfessionals = () => {
                   <SelectValue placeholder="Choisir une ville" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toutes les villes</SelectItem>
+                  <SelectItem value="all">Toutes les villes</SelectItem>
                   <SelectItem value="paris">Paris</SelectItem>
                   <SelectItem value="lyon">Lyon</SelectItem>
                   <SelectItem value="marseille">Marseille</SelectItem>
@@ -256,7 +255,6 @@ const SearchProfessionals = () => {
           </CardContent>
         </Card>
 
-        {/* Résultats */}
         <div className="md:col-span-3 space-y-4">
           {isLoading ? (
             <div className="text-center py-8">Chargement...</div>
