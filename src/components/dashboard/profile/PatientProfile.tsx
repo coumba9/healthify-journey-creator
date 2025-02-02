@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,19 +26,21 @@ interface PatientInfo {
 
 const PatientProfile = () => {
   const { toast } = useToast();
-  const [patientInfo, setPatientInfo] = useState<PatientInfo>({
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
-    address: "",
-    phone: "",
-    email: "",
-    allergies: "",
-    medicalHistory: "",
+  const form = useForm<PatientInfo>({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      address: "",
+      phone: "",
+      email: "",
+      allergies: "",
+      medicalHistory: "",
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: PatientInfo) => {
+    console.log(data);
     toast({
       title: "Profil mis à jour",
       description: "Vos informations ont été enregistrées avec succès.",
@@ -47,114 +49,151 @@ const PatientProfile = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Informations Personnelles</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <FormLabel>Prénom</FormLabel>
-                <Input
-                  value={patientInfo.firstName}
-                  onChange={(e) =>
-                    setPatientInfo({ ...patientInfo, firstName: e.target.value })
-                  }
-                  placeholder="Prénom"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Informations Personnelles</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Prénom</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Prénom" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <div className="space-y-2">
-                <FormLabel>Nom</FormLabel>
-                <Input
-                  value={patientInfo.lastName}
-                  onChange={(e) =>
-                    setPatientInfo({ ...patientInfo, lastName: e.target.value })
-                  }
-                  placeholder="Nom"
-                />
-              </div>
-              <div className="space-y-2">
-                <FormLabel>Date de naissance</FormLabel>
-                <Input
-                  type="date"
-                  value={patientInfo.dateOfBirth}
-                  onChange={(e) =>
-                    setPatientInfo({ ...patientInfo, dateOfBirth: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <FormLabel>Téléphone</FormLabel>
-                <Input
-                  type="tel"
-                  value={patientInfo.phone}
-                  onChange={(e) =>
-                    setPatientInfo({ ...patientInfo, phone: e.target.value })
-                  }
-                  placeholder="Numéro de téléphone"
-                />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <FormLabel>Adresse</FormLabel>
-                <Input
-                  value={patientInfo.address}
-                  onChange={(e) =>
-                    setPatientInfo({ ...patientInfo, address: e.target.value })
-                  }
-                  placeholder="Adresse complète"
-                />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <FormLabel>Email</FormLabel>
-                <Input
-                  type="email"
-                  value={patientInfo.email}
-                  onChange={(e) =>
-                    setPatientInfo({ ...patientInfo, email: e.target.value })
-                  }
-                  placeholder="Email"
-                />
-              </div>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Historique Médical</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-4">
-            <div className="space-y-2">
-              <FormLabel>Allergies</FormLabel>
-              <Textarea
-                value={patientInfo.allergies}
-                onChange={(e) =>
-                  setPatientInfo({ ...patientInfo, allergies: e.target.value })
-                }
-                placeholder="Listez vos allergies..."
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <FormLabel>Antécédents Médicaux</FormLabel>
-              <Textarea
-                value={patientInfo.medicalHistory}
-                onChange={(e) =>
-                  setPatientInfo({ ...patientInfo, medicalHistory: e.target.value })
-                }
-                placeholder="Décrivez vos antécédents médicaux..."
-                rows={5}
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Enregistrer les modifications
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nom" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="dateOfBirth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date de naissance</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Téléphone</FormLabel>
+                      <FormControl>
+                        <Input type="tel" placeholder="Numéro de téléphone" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Adresse</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Adresse complète" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Historique Médical</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="allergies"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Allergies</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Listez vos allergies..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="medicalHistory"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Antécédents Médicaux</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Décrivez vos antécédents médicaux..."
+                          rows={5}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button type="submit" className="w-full">
+                  Enregistrer les modifications
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </form>
+      </Form>
     </div>
   );
 };
