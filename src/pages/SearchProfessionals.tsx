@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filter, MapPin, Star, UserSearch } from "lucide-react";
 import DoctorProfile from "@/components/professionals/DoctorProfile";
+import { Badge } from "@/components/ui/badge";
+import debounce from "lodash/debounce";
 
 interface Doctor {
   id: string;
@@ -34,6 +36,8 @@ const SearchProfessionals = () => {
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [minRating, setMinRating] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
 
   // Exemple de données (à remplacer par des données réelles de l'API)
   const doctors: Doctor[] = [
@@ -61,11 +65,62 @@ const SearchProfessionals = () => {
     },
   ];
 
-  const handleSearch = () => {
+  const filterDoctors = useCallback(
+    debounce((searchValue: string) => {
+      setIsLoading(true);
+      const filtered = doctors.filter((doctor) => {
+        const matchesSearch =
+          !searchValue ||
+          doctor.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+          doctor.specialty.toLowerCase().includes(searchValue.toLowerCase());
+
+        const matchesSpecialty =
+          !selectedSpecialty || doctor.specialty === selectedSpecialty;
+
+        const matchesLocation =
+          !selectedLocation || doctor.location === selectedLocation;
+
+        const matchesPrice =
+          doctor.price >= priceRange[0] && doctor.price <= priceRange[1];
+
+        const matchesRating = doctor.rating >= minRating;
+
+        const matchesLanguages =
+          selectedLanguages.length === 0 ||
+          selectedLanguages.every((lang) => doctor.languages.includes(lang));
+
+        return (
+          matchesSearch &&
+          matchesSpecialty &&
+          matchesLocation &&
+          matchesPrice &&
+          matchesRating &&
+          matchesLanguages
+        );
+      });
+
+      setFilteredDoctors(filtered);
+      setIsLoading(false);
+    }, 300),
+    [selectedSpecialty, selectedLocation, priceRange, minRating, selectedLanguages]
+  );
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    filterDoctors(value);
+    
     toast({
       title: "Recherche en cours",
       description: "Filtrage des professionnels selon vos critères...",
     });
+  };
+
+  const handleLanguageToggle = (language: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(language)
+        ? prev.filter((l) => l !== language)
+        : [...prev, language]
+    );
   };
 
   return (
@@ -88,9 +143,9 @@ const SearchProfessionals = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium">Recherche</label>
               <Input
-                placeholder="Nom du professionnel..."
+                placeholder="Nom ou spécialité..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => handleSearch(e.target.value)}
               />
             </div>
 
@@ -98,12 +153,16 @@ const SearchProfessionals = () => {
               <label className="text-sm font-medium">Spécialité</label>
               <Select
                 value={selectedSpecialty}
-                onValueChange={setSelectedSpecialty}
+                onValueChange={(value) => {
+                  setSelectedSpecialty(value);
+                  filterDoctors(searchTerm);
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Choisir une spécialité" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="">Toutes les spécialités</SelectItem>
                   <SelectItem value="cardiologie">Cardiologie</SelectItem>
                   <SelectItem value="pediatrie">Pédiatrie</SelectItem>
                   <SelectItem value="dermatologie">Dermatologie</SelectItem>
@@ -115,12 +174,16 @@ const SearchProfessionals = () => {
               <label className="text-sm font-medium">Localisation</label>
               <Select
                 value={selectedLocation}
-                onValueChange={setSelectedLocation}
+                onValueChange={(value) => {
+                  setSelectedLocation(value);
+                  filterDoctors(searchTerm);
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Choisir une ville" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="">Toutes les villes</SelectItem>
                   <SelectItem value="paris">Paris</SelectItem>
                   <SelectItem value="lyon">Lyon</SelectItem>
                   <SelectItem value="marseille">Marseille</SelectItem>
@@ -135,11 +198,39 @@ const SearchProfessionals = () => {
                 max={200}
                 step={10}
                 value={priceRange}
-                onValueChange={setPriceRange}
+                onValueChange={(value) => {
+                  setPriceRange(value);
+                  filterDoctors(searchTerm);
+                }}
               />
               <div className="flex justify-between text-sm text-gray-500">
                 <span>{priceRange[0]}€</span>
                 <span>{priceRange[1]}€</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Langues parlées</label>
+              <div className="flex flex-wrap gap-2">
+                {["Français", "Anglais", "Espagnol", "Allemand"].map(
+                  (language) => (
+                    <Badge
+                      key={language}
+                      variant={
+                        selectedLanguages.includes(language)
+                          ? "default"
+                          : "outline"
+                      }
+                      className="cursor-pointer"
+                      onClick={() => {
+                        handleLanguageToggle(language);
+                        filterDoctors(searchTerm);
+                      }}
+                    >
+                      {language}
+                    </Badge>
+                  )
+                )}
               </div>
             </div>
 
@@ -151,7 +242,10 @@ const SearchProfessionals = () => {
                   max={5}
                   step={0.5}
                   value={[minRating]}
-                  onValueChange={(value) => setMinRating(value[0])}
+                  onValueChange={(value) => {
+                    setMinRating(value[0]);
+                    filterDoctors(searchTerm);
+                  }}
                 />
                 <span className="flex items-center gap-1">
                   <Star className="h-4 w-4 text-yellow-400" />
@@ -159,18 +253,22 @@ const SearchProfessionals = () => {
                 </span>
               </div>
             </div>
-
-            <Button className="w-full" onClick={handleSearch}>
-              Rechercher
-            </Button>
           </CardContent>
         </Card>
 
         {/* Résultats */}
         <div className="md:col-span-3 space-y-4">
-          {doctors.map((doctor) => (
-            <DoctorProfile key={doctor.id} doctor={doctor} />
-          ))}
+          {isLoading ? (
+            <div className="text-center py-8">Chargement...</div>
+          ) : filteredDoctors.length > 0 ? (
+            filteredDoctors.map((doctor) => (
+              <DoctorProfile key={doctor.id} doctor={doctor} />
+            ))
+          ) : (
+            <div className="text-center py-8">
+              Aucun professionnel ne correspond à vos critères
+            </div>
+          )}
         </div>
       </div>
     </div>
