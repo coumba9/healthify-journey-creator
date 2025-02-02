@@ -20,6 +20,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Routes publiques */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -27,7 +28,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
+          
+          {/* Routes de recherche de professionnels */}
           <Route path="/search" element={<SearchProfessionals />} />
+          <Route path="/doctor/:id" element={<SearchProfessionals />} />
           
           {/* Routes protégées */}
           <Route
@@ -46,6 +50,15 @@ function App() {
                       return <PatientDashboard />;
                   }
                 }}
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/search"
+            element={
+              <ProtectedRoute>
+                <SearchProfessionals />
               </ProtectedRoute>
             }
           />
