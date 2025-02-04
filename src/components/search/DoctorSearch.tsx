@@ -86,13 +86,13 @@ const DoctorSearch = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
             <Input
               placeholder="Rechercher un médecin..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
-              icon={<Search className="h-4 w-4" />}
+              className="pl-10 w-full"
             />
           </div>
           
