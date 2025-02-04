@@ -28,6 +28,7 @@ import NotificationsPage from "./pages/dashboard/notifications/NotificationsPage
 import HistoryPage from "./pages/dashboard/history/HistoryPage";
 import PaymentsPage from "./pages/dashboard/payments/PaymentsPage";
 import PrescriptionsPage from "./pages/dashboard/prescriptions/PrescriptionsPage";
+import ProfilePage from "./pages/dashboard/profile/ProfilePage"; // Import de la nouvelle page de profil
 
 // Pages du médecin
 import SchedulePage from "./pages/dashboard/doctor/SchedulePage";
@@ -144,6 +145,14 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={["patient"]}>
                   <PrescriptionsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/profile" // Ajout de la route pour la page de profil
+              element={
+                <ProtectedRoute allowedRoles={["patient"]}>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />
