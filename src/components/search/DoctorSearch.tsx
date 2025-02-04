@@ -1,22 +1,8 @@
 import { useState } from "react";
-import { Search, MapPin, Star, Calendar, Euro } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import SearchFilters from "./SearchFilters";
+import DoctorCard from "./DoctorCard";
 
 interface Doctor {
   id: string;
@@ -36,7 +22,6 @@ const DoctorSearch = () => {
   const [specialty, setSpecialty] = useState("all");
   const [location, setLocation] = useState("all");
   const [insurance, setInsurance] = useState("all");
-  const [availability, setAvailability] = useState("all");
 
   // Exemple de données (à remplacer par des données réelles)
   const doctors: Doctor[] = [
@@ -65,7 +50,6 @@ const DoctorSearch = () => {
   ];
 
   const handleSearch = () => {
-    // Logique de filtrage
     const filteredDoctors = doctors.filter(doctor => {
       const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesSpecialty = specialty === "all" || doctor.specialty === specialty;
@@ -85,53 +69,16 @@ const DoctorSearch = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="space-y-6">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-            <Input
-              placeholder="Rechercher un médecin..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-full"
-            />
-          </div>
-          
-          <Select value={specialty} onValueChange={setSpecialty}>
-            <SelectTrigger>
-              <SelectValue placeholder="Spécialité" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toutes les spécialités</SelectItem>
-              <SelectItem value="cardiologie">Cardiologie</SelectItem>
-              <SelectItem value="pediatrie">Pédiatrie</SelectItem>
-              <SelectItem value="generaliste">Médecine générale</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={location} onValueChange={setLocation}>
-            <SelectTrigger>
-              <SelectValue placeholder="Localisation" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toutes les villes</SelectItem>
-              <SelectItem value="Paris">Paris</SelectItem>
-              <SelectItem value="Lyon">Lyon</SelectItem>
-              <SelectItem value="Marseille">Marseille</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={insurance} onValueChange={setInsurance}>
-            <SelectTrigger>
-              <SelectValue placeholder="Mutuelle" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toutes les mutuelles</SelectItem>
-              <SelectItem value="MGEN">MGEN</SelectItem>
-              <SelectItem value="Harmonie">Harmonie Mutuelle</SelectItem>
-              <SelectItem value="MAAF">MAAF</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <SearchFilters
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          specialty={specialty}
+          setSpecialty={setSpecialty}
+          location={location}
+          setLocation={setLocation}
+          insurance={insurance}
+          setInsurance={setInsurance}
+        />
 
         <Button onClick={handleSearch} className="w-full md:w-auto">
           Rechercher
@@ -139,42 +86,7 @@ const DoctorSearch = () => {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {doctors.map((doctor) => (
-            <Card key={doctor.id}>
-              <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                  {doctor.name}
-                  <span className="flex items-center text-sm">
-                    <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                    {doctor.rating}
-                  </span>
-                </CardTitle>
-                <CardDescription>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    {doctor.location}
-                  </div>
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-sm">Spécialité: {doctor.specialty}</p>
-                  <p className="text-sm">Expérience: {doctor.experience} ans</p>
-                  <p className="flex items-center gap-2">
-                    <Euro className="h-4 w-4" />
-                    {doctor.price}€ la consultation
-                  </p>
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="w-full">
-                      Voir le profil
-                    </Button>
-                    <Button className="w-full">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Réserver
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <DoctorCard key={doctor.id} doctor={doctor} />
           ))}
         </div>
       </div>
