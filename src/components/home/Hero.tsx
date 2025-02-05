@@ -7,6 +7,11 @@ import { Link } from "react-router-dom";
 const Hero = () => {
   const { user } = useAuth();
 
+  const handleSearchSuggestion = (searchTerm: string) => {
+    console.log("Recherche suggérée:", searchTerm);
+    // Logique de recherche à implémenter
+  };
+
   return (
     <div className="relative bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -36,8 +41,18 @@ const Hero = () => {
                     </div>
                     <div className="mt-2 flex flex-wrap gap-2 text-sm text-gray-500">
                       <span>Suggestions :</span>
-                      <button className="hover:text-primary-600">Dermatologue Paris</button>
-                      <button className="hover:text-primary-600">Urgence pédiatrique</button>
+                      <button 
+                        onClick={() => handleSearchSuggestion("Dermatologue Paris")}
+                        className="hover:text-primary-600"
+                      >
+                        Dermatologue Paris
+                      </button>
+                      <button 
+                        onClick={() => handleSearchSuggestion("Urgence pédiatrique")}
+                        className="hover:text-primary-600"
+                      >
+                        Urgence pédiatrique
+                      </button>
                     </div>
                   </div>
 
