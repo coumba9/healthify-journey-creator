@@ -6,11 +6,17 @@ import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
+import Features from "@/pages/Features";
+import Pricing from "@/pages/Pricing";
+import FAQ from "@/pages/FAQ";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 export const publicRoutes = [
   <Route key="index" path="/" element={<Index />} />,
   <Route key="about" path="/about" element={<About />} />,
+  <Route key="features" path="/features" element={<Features />} />,
+  <Route key="pricing" path="/pricing" element={<Pricing />} />,
+  <Route key="faq" path="/faq" element={<FAQ />} />,
   <Route key="login" path="/login" element={<Login />} />,
   <Route key="register" path="/register" element={<Register />} />,
   <Route key="reset-password" path="/reset-password" element={<ResetPassword />} />,
