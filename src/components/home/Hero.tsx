@@ -1,57 +1,81 @@
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
+  const { user } = useAuth();
+
   return (
     <div className="relative bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
           <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
             <div className="sm:text-center lg:text-left">
-              <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                <span className="block xl:inline">Prenez rendez-vous avec un</span>{" "}
-                <span className="block text-primary-600 xl:inline">
-                  professionnel de santé en quelques clics !
-                </span>
-              </h1>
-              <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                24h/24, 7j/7 – Consultations en ligne ou en cabinet
-              </p>
+              {!user ? (
+                <>
+                  <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                    <span className="block xl:inline">Prenez rendez-vous avec un</span>{" "}
+                    <span className="block text-primary-600 xl:inline">
+                      professionnel de santé en 3 clics !
+                    </span>
+                  </h1>
+                  <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                    24h/24, 7j/7 – Consultations en ligne ou en cabinet
+                  </p>
 
-              <div className="mt-8 max-w-md mx-auto lg:mx-0">
-                <div className="relative">
-                  <Input
-                    type="text"
-                    placeholder="Rechercher un médecin, une spécialité..."
-                    className="pl-10 pr-4 py-2 w-full"
-                  />
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2 text-sm text-gray-500">
-                  <span>Suggestions :</span>
-                  <button className="hover:text-primary-600">Dermatologue Paris</button>
-                  <button className="hover:text-primary-600">Urgence pédiatrique</button>
-                </div>
-              </div>
+                  <div className="mt-8 max-w-md mx-auto lg:mx-0">
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        placeholder="Rechercher un médecin, une spécialité..."
+                        className="pl-10 pr-4 py-2 w-full"
+                      />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-2 text-sm text-gray-500">
+                      <span>Suggestions :</span>
+                      <button className="hover:text-primary-600">Dermatologue Paris</button>
+                      <button className="hover:text-primary-600">Urgence pédiatrique</button>
+                    </div>
+                  </div>
 
-              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                <div className="rounded-md shadow">
-                  <Button
-                    className="w-full flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 md:py-4 md:text-lg md:px-10"
-                  >
-                    Trouver un médecin
-                  </Button>
+                  <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                    <div className="rounded-md shadow">
+                      <Button
+                        asChild
+                        className="w-full flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 md:py-4 md:text-lg md:px-10"
+                      >
+                        <Link to="/doctors">Trouver un médecin</Link>
+                      </Button>
+                    </div>
+                    <div className="mt-3 sm:mt-0 sm:ml-3">
+                      <Button
+                        variant="outline"
+                        asChild
+                        className="w-full flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 md:py-4 md:text-lg md:px-10"
+                      >
+                        <Link to="/register?type=doctor">Rejoindre la plateforme</Link>
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center">
+                  <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                    <span className="block text-primary-600">Bienvenue sur votre espace</span>
+                  </h1>
+                  <div className="mt-5">
+                    <Button
+                      asChild
+                      className="px-8 py-3 text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 md:py-4 md:text-lg md:px-10"
+                    >
+                      <Link to="/dashboard">Accéder à mon tableau de bord</Link>
+                    </Button>
+                  </div>
                 </div>
-                <div className="mt-3 sm:mt-0 sm:ml-3">
-                  <Button
-                    variant="outline"
-                    className="w-full flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 md:py-4 md:text-lg md:px-10"
-                  >
-                    Téléconsultation
-                  </Button>
-                </div>
-              </div>
+              )}
 
               <div className="mt-6 flex items-center justify-center lg:justify-start space-x-4">
                 <span className="flex items-center text-sm text-gray-500">
