@@ -14,6 +14,7 @@ import PatientInfoStep from "./steps/PatientInfoStep";
 import ConsultationTypeStep from "./steps/ConsultationTypeStep";
 import DateTimeStep from "./steps/DateTimeStep";
 import MedicalInfoStep from "./steps/MedicalInfoStep";
+import PaymentStep from "./steps/PaymentStep";
 
 const NewAppointmentForm = () => {
   const { user } = useAuth();
@@ -92,6 +93,13 @@ const NewAppointmentForm = () => {
             setFormData={setFormData}
           />
         );
+      case 5:
+        return (
+          <PaymentStep
+            amount={15000} // Montant fixe pour l'exemple
+            onPaymentComplete={() => handleSubmit}
+          />
+        );
       default:
         return null;
     }
@@ -102,14 +110,16 @@ const NewAppointmentForm = () => {
       <CardHeader>
         <CardTitle>Prendre un rendez-vous</CardTitle>
         <CardDescription>
-          {`Étape ${step}/4 - ${
+          {`Étape ${step}/5 - ${
             step === 1
               ? "Informations personnelles"
               : step === 2
               ? "Type de consultation"
               : step === 3
               ? "Date et heure"
-              : "Informations médicales"
+              : step === 4
+              ? "Informations médicales"
+              : "Paiement"
           }`}
         </CardDescription>
       </CardHeader>
@@ -127,7 +137,7 @@ const NewAppointmentForm = () => {
                 Précédent
               </Button>
             )}
-            {step < 4 ? (
+            {step < 5 ? (
               <Button
                 type="button"
                 onClick={() => setStep(step + 1)}
@@ -135,11 +145,7 @@ const NewAppointmentForm = () => {
               >
                 Suivant
               </Button>
-            ) : (
-              <Button type="submit" className="ml-auto">
-                Confirmer le rendez-vous
-              </Button>
-            )}
+            ) : null}
           </div>
         </form>
       </CardContent>
