@@ -1,4 +1,4 @@
-import { CreditCard, Download, Search } from "lucide-react";
+import { CreditCard, Download, Search, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import { useNavigate } from "react-router-dom";
 
 interface Payment {
   id: string;
@@ -17,40 +18,56 @@ interface Payment {
   amount: number;
   description: string;
   status: "paid" | "pending" | "failed";
+  paymentMethod: "wave" | "orange-money";
 }
 
 const PaymentsPage = () => {
-  // Example payments (to be replaced with real data from Supabase later)
+  const navigate = useNavigate();
+  
+  // Example payments (à remplacer avec des données réelles plus tard)
   const payments: Payment[] = [
     {
       id: "1",
       date: "2024-03-10",
-      amount: 50,
+      amount: 15000,
       description: "Consultation générale",
       status: "paid",
+      paymentMethod: "wave"
     },
     {
       id: "2",
       date: "2024-02-15",
-      amount: 75,
+      amount: 25000,
       description: "Analyse de sang",
       status: "pending",
+      paymentMethod: "orange-money"
     },
     {
       id: "3",
       date: "2024-01-20",
-      amount: 30,
+      amount: 10000,
       description: "Prescription médicale",
       status: "paid",
+      paymentMethod: "wave"
     },
   ];
+
+  const handleNewPayment = () => {
+    navigate("/appointment/new");
+  };
 
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Paiements</h1>
-          <CreditCard className="h-6 w-6 text-gray-500" />
+          <div>
+            <h1 className="text-3xl font-bold">Paiements</h1>
+            <p className="text-gray-500 mt-2">Gérez vos paiements et transactions</p>
+          </div>
+          <Button onClick={handleNewPayment} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Nouveau Paiement
+          </Button>
         </div>
 
         <div className="mb-6 flex justify-between items-center">
@@ -61,18 +78,19 @@ const PaymentsPage = () => {
               className="pl-10"
             />
           </div>
-          <Button>
+          <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
             Télécharger l'historique
           </Button>
         </div>
 
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white rounded-lg shadow overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Description</TableHead>
+                <TableHead>Méthode</TableHead>
                 <TableHead>Montant</TableHead>
                 <TableHead>Statut</TableHead>
               </TableRow>
@@ -81,10 +99,20 @@ const PaymentsPage = () => {
               {payments.map((payment) => (
                 <TableRow key={payment.id}>
                   <TableCell>
-                    {new Date(payment.date).toLocaleDateString()}
+                    {new Date(payment.date).toLocaleDateString('fr-FR')}
                   </TableCell>
                   <TableCell>{payment.description}</TableCell>
-                  <TableCell>{payment.amount} €</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={`/${payment.paymentMethod}-logo.png`}
+                        alt={payment.paymentMethod}
+                        className="h-6 w-6 object-contain"
+                      />
+                      {payment.paymentMethod === 'wave' ? 'Wave' : 'Orange Money'}
+                    </div>
+                  </TableCell>
+                  <TableCell>{payment.amount.toLocaleString('fr-FR')} FCFA</TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-sm ${
