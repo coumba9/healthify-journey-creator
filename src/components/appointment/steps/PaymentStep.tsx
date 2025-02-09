@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { initializeWavePayment, initializeOrangeMoneyPayment } from "@/services/paymentService";
+import { Loader2 } from "lucide-react";
 
 interface PaymentStepProps {
   amount: number;
@@ -12,32 +14,44 @@ interface PaymentStepProps {
 
 const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
   const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
   const handlePayment = async () => {
+    setIsProcessing(true);
     try {
-      // Ici nous simulerons le paiement pour l'instant
-      // TODO: Intégrer l'API de paiement réelle
-      toast({
-        title: "Paiement en cours",
-        description: "Veuillez patienter...",
-      });
+      let paymentResponse;
 
-      // Simuler un délai de traitement
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (paymentMethod === "wave") {
+        paymentResponse = await initializeWavePayment(amount);
+      } else if (paymentMethod === "orange-money") {
+        paymentResponse = await initializeOrangeMoneyPayment(amount);
+      } else {
+        throw new Error("Méthode de paiement non valide");
+      }
 
-      toast({
-        title: "Paiement réussi",
-        description: "Votre paiement a été traité avec succès.",
-      });
-
-      onPaymentComplete();
+      if (paymentResponse.success) {
+        toast({
+          title: "Paiement réussi",
+          description: `Transaction ID: ${paymentResponse.transactionId}`,
+        });
+        onPaymentComplete();
+      } else {
+        toast({
+          title: "Erreur de paiement",
+          description: paymentResponse.error || "Une erreur est survenue",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
+      console.error("Erreur lors du paiement:", error);
       toast({
         title: "Erreur de paiement",
-        description: "Une erreur est survenue lors du paiement.",
+        description: "Une erreur est survenue lors du traitement du paiement",
         variant: "destructive",
       });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -46,7 +60,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
       <div>
         <h3 className="text-lg font-medium">Paiement de la consultation</h3>
         <p className="text-sm text-gray-500">
-          Montant à payer : {amount.toFixed(2)} FCFA
+          Montant à payer : {(amount / 100).toFixed(2)} FCFA
         </p>
       </div>
 
@@ -113,10 +127,17 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
 
       <Button
         onClick={handlePayment}
-        disabled={!paymentMethod}
+        disabled={!paymentMethod || isProcessing}
         className="w-full"
       >
-        Procéder au paiement
+        {isProcessing ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Traitement en cours...
+          </>
+        ) : (
+          "Procéder au paiement"
+        )}
       </Button>
     </div>
   );
