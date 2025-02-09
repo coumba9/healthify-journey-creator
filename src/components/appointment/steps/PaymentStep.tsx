@@ -32,13 +32,13 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
 
       if (paymentResponse.success) {
         toast({
-          title: "Paiement réussi",
-          description: `Transaction ID: ${paymentResponse.transactionId}`,
+          title: "Paiement réussi (Mode Démo)",
+          description: `ID Transaction: ${paymentResponse.transactionId}`,
         });
         onPaymentComplete();
       } else {
         toast({
-          title: "Erreur de paiement",
+          title: "Erreur de paiement (Mode Démo)",
           description: paymentResponse.error || "Une erreur est survenue",
           variant: "destructive",
         });
@@ -58,7 +58,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium">Paiement de la consultation</h3>
+        <h3 className="text-lg font-medium">Paiement de la consultation (Mode Démo)</h3>
         <p className="text-sm text-gray-500">
           Montant à payer : {(amount / 100).toFixed(2)} FCFA
         </p>
@@ -88,10 +88,10 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
                 />
                 <div>
                   <Label htmlFor="wave" className="text-base">
-                    Wave
+                    Wave (Démo)
                   </Label>
                   <p className="text-sm text-gray-500">
-                    Paiement via Wave Mobile Money
+                    Simulation de paiement Wave
                   </p>
                 </div>
               </div>
@@ -113,10 +113,10 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
                 />
                 <div>
                   <Label htmlFor="orange-money" className="text-base">
-                    Orange Money
+                    Orange Money (Démo)
                   </Label>
                   <p className="text-sm text-gray-500">
-                    Paiement via Orange Money
+                    Simulation de paiement Orange Money
                   </p>
                 </div>
               </div>
@@ -136,7 +136,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
             Traitement en cours...
           </>
         ) : (
-          "Procéder au paiement"
+          "Procéder au paiement (Démo)"
         )}
       </Button>
     </div>
