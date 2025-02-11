@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Download } from "lucide-react";
+import { History, Receipt, Download } from "lucide-react";
 
 const PaymentsPage = () => {
   const { toast } = useToast();
@@ -27,6 +27,7 @@ const PaymentsPage = () => {
       amount: 15000,
       type: "Consultation",
       status: "Payé",
+      method: "Wave",
     },
     {
       id: "2",
@@ -34,6 +35,7 @@ const PaymentsPage = () => {
       amount: 25000,
       type: "Analyses",
       status: "Payé",
+      method: "Orange Money",
     },
   ]);
 
@@ -48,9 +50,12 @@ const PaymentsPage = () => {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Historique des Paiements</h1>
-          <p className="text-gray-500">
-            Consultez et gérez vos paiements
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <History className="h-8 w-8 text-primary-600" />
+            Historique des Paiements
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Consultez l'historique de vos transactions
           </p>
         </div>
       </div>
@@ -58,9 +63,12 @@ const PaymentsPage = () => {
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Récents paiements</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Receipt className="h-5 w-5 text-primary-600" />
+              Transactions récentes
+            </CardTitle>
             <CardDescription>
-              Historique de vos dernières transactions
+              Liste de vos dernières transactions
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -70,6 +78,7 @@ const PaymentsPage = () => {
                   <TableHead>Date</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Montant</TableHead>
+                  <TableHead>Méthode</TableHead>
                   <TableHead>Statut</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -82,6 +91,7 @@ const PaymentsPage = () => {
                     </TableCell>
                     <TableCell>{payment.type}</TableCell>
                     <TableCell>{payment.amount} FCFA</TableCell>
+                    <TableCell>{payment.method}</TableCell>
                     <TableCell>
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         {payment.status}
