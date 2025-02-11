@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { initializeWavePayment, initializeOrangeMoneyPayment } from "@/services/paymentService";
-import { Loader2 } from "lucide-react";
+import { Loader2, CreditCard } from "lucide-react";
 
 interface PaymentStepProps {
   amount: number;
@@ -31,14 +31,10 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
       }
 
       if (paymentResponse.success) {
-        toast({
-          title: "Paiement du rendez-vous réussi",
-          description: `Votre rendez-vous a été confirmé. ID Transaction: ${paymentResponse.transactionId}`,
-        });
         onPaymentComplete();
       } else {
         toast({
-          title: "Erreur lors du paiement du rendez-vous",
+          title: "Erreur lors du paiement",
           description: paymentResponse.error || "Une erreur est survenue",
           variant: "destructive",
         });
@@ -57,11 +53,14 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Paiement de la consultation</h3>
-        <p className="text-sm text-gray-500">
-          Montant à payer : {(amount / 100).toFixed(2)} FCFA
-        </p>
+      <div className="flex items-center gap-2">
+        <CreditCard className="h-5 w-5 text-primary-600" />
+        <div>
+          <h3 className="text-lg font-medium">Paiement de la consultation</h3>
+          <p className="text-sm text-gray-500">
+            Montant à payer : {(amount / 100).toFixed(2)} FCFA
+          </p>
+        </div>
       </div>
 
       <RadioGroup
@@ -73,7 +72,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
           <Label className="text-base">Choisissez votre moyen de paiement</Label>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="relative cursor-pointer hover:border-primary-500">
+          <Card className="relative cursor-pointer hover:border-primary-500 transition-colors">
             <CardContent className="p-6">
               <RadioGroupItem
                 value="wave"
@@ -98,7 +97,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
             </CardContent>
           </Card>
 
-          <Card className="relative cursor-pointer hover:border-primary-500">
+          <Card className="relative cursor-pointer hover:border-primary-500 transition-colors">
             <CardContent className="p-6">
               <RadioGroupItem
                 value="orange-money"
@@ -136,7 +135,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
             Traitement en cours...
           </>
         ) : (
-          "Payer la consultation"
+          "Payer maintenant"
         )}
       </Button>
     </div>

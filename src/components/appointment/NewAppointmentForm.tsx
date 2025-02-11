@@ -9,12 +9,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 import PatientInfoStep from "./steps/PatientInfoStep";
 import ConsultationTypeStep from "./steps/ConsultationTypeStep";
 import DateTimeStep from "./steps/DateTimeStep";
 import MedicalInfoStep from "./steps/MedicalInfoStep";
 import PaymentStep from "./steps/PaymentStep";
+
+const STEPS = [
+  { id: 1, title: "Informations personnelles" },
+  { id: 2, title: "Type de consultation" },
+  { id: 3, title: "Date et heure" },
+  { id: 4, title: "Informations médicales" },
+  { id: 5, title: "Paiement" },
+];
 
 const NewAppointmentForm = () => {
   const { user } = useAuth();
@@ -63,8 +72,13 @@ const NewAppointmentForm = () => {
 
   const handlePaymentComplete = () => {
     handleSubmit({ preventDefault: () => {} } as React.FormEvent);
-    // Rediriger vers la page de confirmation
+    toast({
+      title: "Paiement réussi",
+      description: "Votre rendez-vous a été confirmé.",
+    });
   };
+
+  const progress = (step / STEPS.length) * 100;
 
   const renderStep = () => {
     switch (step) {
@@ -101,7 +115,7 @@ const NewAppointmentForm = () => {
       case 5:
         return (
           <PaymentStep
-            amount={15000} // Montant fixe pour l'exemple
+            amount={15000}
             onPaymentComplete={handlePaymentComplete}
           />
         );
@@ -114,25 +128,19 @@ const NewAppointmentForm = () => {
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Prendre un rendez-vous</CardTitle>
-        <CardDescription>
-          {`Étape ${step}/5 - ${
-            step === 1
-              ? "Informations personnelles"
-              : step === 2
-              ? "Type de consultation"
-              : step === 3
-              ? "Date et heure"
-              : step === 4
-              ? "Informations médicales"
-              : "Paiement"
-          }`}
+        <CardDescription className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>{`Étape ${step}/${STEPS.length} - ${STEPS[step - 1].title}`}</span>
+            <span>{Math.round(progress)}%</span>
+          </div>
+          <Progress value={progress} className="h-2" />
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           {renderStep()}
           
-          <div className="flex justify-between">
+          <div className="flex justify-between mt-6">
             {step > 1 && (
               <Button
                 type="button"
@@ -142,15 +150,15 @@ const NewAppointmentForm = () => {
                 Précédent
               </Button>
             )}
-            {step < 5 ? (
+            {step < 5 && (
               <Button
                 type="button"
                 onClick={() => setStep(step + 1)}
-                className="ml-auto"
+                className={step === 1 ? "w-full" : "ml-auto"}
               >
                 Suivant
               </Button>
-            ) : null}
+            )}
           </div>
         </form>
       </CardContent>
