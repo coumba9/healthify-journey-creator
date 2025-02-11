@@ -76,7 +76,7 @@ const NewAppointmentForm = () => {
     toast({
       title: "Paiement réussi",
       description: "Votre rendez-vous a été confirmé.",
-      variant: "success",
+      variant: "default",
     });
   };
 
