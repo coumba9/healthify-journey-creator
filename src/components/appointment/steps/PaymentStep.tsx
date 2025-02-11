@@ -32,13 +32,13 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
 
       if (paymentResponse.success) {
         toast({
-          title: "Paiement réussi (Mode Démo)",
-          description: `ID Transaction: ${paymentResponse.transactionId}`,
+          title: "Paiement du rendez-vous réussi",
+          description: `Votre rendez-vous a été confirmé. ID Transaction: ${paymentResponse.transactionId}`,
         });
         onPaymentComplete();
       } else {
         toast({
-          title: "Erreur de paiement (Mode Démo)",
+          title: "Erreur lors du paiement du rendez-vous",
           description: paymentResponse.error || "Une erreur est survenue",
           variant: "destructive",
         });
@@ -58,7 +58,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium">Paiement de la consultation (Mode Démo)</h3>
+        <h3 className="text-lg font-medium">Paiement de la consultation</h3>
         <p className="text-sm text-gray-500">
           Montant à payer : {(amount / 100).toFixed(2)} FCFA
         </p>
@@ -73,7 +73,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
           <Label className="text-base">Choisissez votre moyen de paiement</Label>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="relative">
+          <Card className="relative cursor-pointer hover:border-primary-500">
             <CardContent className="p-6">
               <RadioGroupItem
                 value="wave"
@@ -88,17 +88,17 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
                 />
                 <div>
                   <Label htmlFor="wave" className="text-base">
-                    Wave (Démo)
+                    Wave
                   </Label>
                   <p className="text-sm text-gray-500">
-                    Simulation de paiement Wave
+                    Paiement sécurisé via Wave
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="relative">
+          <Card className="relative cursor-pointer hover:border-primary-500">
             <CardContent className="p-6">
               <RadioGroupItem
                 value="orange-money"
@@ -113,10 +113,10 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
                 />
                 <div>
                   <Label htmlFor="orange-money" className="text-base">
-                    Orange Money (Démo)
+                    Orange Money
                   </Label>
                   <p className="text-sm text-gray-500">
-                    Simulation de paiement Orange Money
+                    Paiement sécurisé via Orange Money
                   </p>
                 </div>
               </div>
@@ -136,7 +136,7 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
             Traitement en cours...
           </>
         ) : (
-          "Procéder au paiement (Démo)"
+          "Payer la consultation"
         )}
       </Button>
     </div>
