@@ -5,7 +5,6 @@ import NewAppointmentForm from "@/components/appointment/NewAppointmentForm";
 import DocumentsPage from "@/pages/dashboard/documents/DocumentsPage";
 import MessagesPage from "@/pages/dashboard/messages/MessagesPage";
 import NotificationsPage from "@/pages/dashboard/notifications/NotificationsPage";
-import PaymentsPage from "@/pages/dashboard/payments/PaymentsPage";
 
 export const patientRoutes = [
   <Route
@@ -50,15 +49,6 @@ export const patientRoutes = [
     element={
       <ProtectedRoute allowedRoles={["patient"]}>
         <NotificationsPage />
-      </ProtectedRoute>
-    }
-  />,
-  <Route
-    key="payments"
-    path="/dashboard/payments"
-    element={
-      <ProtectedRoute allowedRoles={["patient"]}>
-        <PaymentsPage />
       </ProtectedRoute>
     }
   />,

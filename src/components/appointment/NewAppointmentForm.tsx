@@ -61,6 +61,11 @@ const NewAppointmentForm = () => {
     });
   };
 
+  const handlePaymentComplete = () => {
+    handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+    // Rediriger vers la page de confirmation
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -97,7 +102,7 @@ const NewAppointmentForm = () => {
         return (
           <PaymentStep
             amount={15000} // Montant fixe pour l'exemple
-            onPaymentComplete={() => handleSubmit}
+            onPaymentComplete={handlePaymentComplete}
           />
         );
       default:
