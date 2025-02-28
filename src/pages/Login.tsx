@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,11 +15,16 @@ import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"patient" | "doctor" | "admin">("patient");
+  
+  // Extraire les paramètres de l'URL
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.get('redirect') || "/dashboard";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +33,9 @@ const Login = () => {
       title: "Connexion réussie",
       description: `Bienvenue, vous êtes connecté en tant que ${role}`,
     });
-    navigate("/dashboard");
+    
+    // Rediriger vers la page demandée ou vers le tableau de bord par défaut
+    navigate(redirect);
   };
 
   return (
@@ -37,6 +45,11 @@ const Login = () => {
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Connexion
           </h2>
+          {redirect !== "/dashboard" && (
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Connectez-vous pour continuer votre réservation
+            </p>
+          )}
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">

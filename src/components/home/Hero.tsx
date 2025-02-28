@@ -1,36 +1,43 @@
+
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Search, Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
+import ChooseDoctorButton from "@/components/appointment/ChooseDoctorButton";
 
 const Hero = () => {
-  const navigate = useNavigate();
-
   return (
-    <section className="relative bg-white">
-      <div className="container mx-auto px-4 py-32 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-          Prenez rendez-vous en ligne avec un professionnel de santé
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-gray-600">
-          Trouvez rapidement un médecin près de chez vous et prenez rendez-vous en quelques clics
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Button 
-            size="lg"
-            onClick={() => navigate('/doctors')}
-            className="bg-primary hover:bg-primary/90"
-          >
-            Choisir un médecin
-          </Button>
-          <Button 
-            variant="outline" 
-            size="lg"
-            onClick={() => navigate('/register?type=doctor')}
-          >
-            Vous êtes médecin ?
-          </Button>
+    <div className="relative overflow-hidden bg-background py-20">
+      <div className="container flex flex-col md:flex-row items-center gap-12">
+        <div className="flex-1 space-y-6">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Des soins médicaux de qualité accessibles à tous
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-prose">
+            Prenez facilement rendez-vous avec des médecins qualifiés, consultez
+            vos dossiers médicaux et recevez des conseils de santé personnalisés.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <ChooseDoctorButton />
+            
+            <Button variant="outline">
+              <Calendar className="mr-2 h-4 w-4" />
+              Prendre rendez-vous
+            </Button>
+            
+            <Link to="/services">
+              <Button variant="ghost">Découvrir nos services</Button>
+            </Link>
+          </div>
+        </div>
+        <div className="flex-1 order-first md:order-last">
+          <img
+            src="/placeholder.svg"
+            alt="Medical illustration"
+            className="mx-auto w-full max-w-md"
+          />
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
