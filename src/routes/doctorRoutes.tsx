@@ -1,3 +1,4 @@
+
 import { Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import SchedulePage from "@/pages/dashboard/doctor/SchedulePage";

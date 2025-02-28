@@ -1,3 +1,4 @@
+
 import { Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import PatientDashboard from "@/pages/dashboard/PatientDashboard";
@@ -11,6 +12,7 @@ export const dashboardRoutes = [
     element={
       <ProtectedRoute>
         {({ user }) => {
+          console.log("Dashboard route user:", user);
           switch (user.role) {
             case "patient":
               return <PatientDashboard />;
@@ -19,7 +21,8 @@ export const dashboardRoutes = [
             case "admin":
               return <AdminDashboard />;
             default:
-              return null;
+              console.log("Unknown role:", user.role);
+              return <PatientDashboard />;
           }
         }}
       </ProtectedRoute>

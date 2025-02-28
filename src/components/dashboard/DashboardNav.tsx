@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Home,
@@ -20,9 +21,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useToast } from "@/hooks/use-toast";
 
 const DashboardNav = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  console.log("DashboardNav user:", user);
+
+  if (!user) {
+    console.log("No user found in DashboardNav, redirecting to login");
+    toast({
+      title: "Session expirée",
+      description: "Veuillez vous reconnecter",
+      variant: "destructive",
+    });
+    navigate("/login");
+    return null;
+  }
 
   const getMenuItems = () => {
     switch (user?.role) {
@@ -50,8 +67,18 @@ const DashboardNav = () => {
           { title: "Paramètres", icon: Settings, url: "/dashboard/settings" },
         ];
       default:
+        console.log("Unknown role in getMenuItems:", user?.role);
         return [];
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Déconnexion réussie",
+      description: "Vous avez été déconnecté avec succès",
+    });
+    navigate("/");
   };
 
   return (
@@ -79,7 +106,7 @@ const DashboardNav = () => {
               ))}
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="flex items-center gap-2 text-red-500"
                 >
                   <LogOut className="h-4 w-4" />

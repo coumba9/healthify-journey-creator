@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 type UserRole = "patient" | "doctor" | "admin";
@@ -24,10 +25,25 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Fonction pour récupérer l'utilisateur du localStorage
+const getSavedUser = (): User | null => {
+  const savedUser = localStorage.getItem("mediconnect-user");
+  return savedUser ? JSON.parse(savedUser) : null;
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => getSavedUser());
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  // Enregistrer l'utilisateur dans localStorage quand il change
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("mediconnect-user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("mediconnect-user");
+    }
+  }, [user]);
 
   const login = (email: string, password: string, role: UserRole) => {
     setIsLoading(true);
@@ -45,12 +61,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Connexion réussie",
         description: `Bienvenue ${mockUser.name}!`,
       });
+      console.log("User logged in:", mockUser);
     } catch (error) {
       toast({
         title: "Erreur de connexion",
         description: "Identifiants invalides",
         variant: "destructive",
       });
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -69,12 +87,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Inscription réussie",
         description: "Votre compte a été créé avec succès",
       });
+      console.log("User registered:", newUser);
     } catch (error) {
       toast({
         title: "Erreur d'inscription",
         description: "Une erreur est survenue lors de l'inscription",
         variant: "destructive",
       });
+      console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -89,21 +109,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Profil mis à jour",
         description: "Vos informations ont été mises à jour avec succès",
       });
+      console.log("Profile updated:", updatedUser);
     } catch (error) {
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le profil",
         variant: "destructive",
       });
+      console.error("Profile update error:", error);
     }
   };
 
   const logout = () => {
     setUser(null);
-    toast({
-      title: "Déconnexion",
-      description: "Vous avez été déconnecté avec succès",
-    });
+    console.log("User logged out");
   };
 
   return (

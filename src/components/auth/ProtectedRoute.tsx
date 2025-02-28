@@ -1,3 +1,4 @@
+
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -13,6 +14,8 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     return <Navigate to="/login" replace />;
   }
 
+  // Si des rôles sont spécifiés mais que l'utilisateur n'a pas le rôle requis,
+  // rediriger vers le tableau de bord général
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/dashboard" replace />;
   }

@@ -1,10 +1,26 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleDashboardClick = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      toast({
+        title: "Connexion requise",
+        description: "Veuillez vous connecter pour accéder à votre espace",
+        variant: "destructive",
+      });
+      navigate('/login');
+    }
+  };
 
   return (
     <nav className="bg-white shadow-sm">
@@ -39,12 +55,19 @@ const Navbar = () => {
               <>
                 <Button 
                   variant="ghost"
-                  onClick={() => logout()}
+                  onClick={() => {
+                    logout();
+                    toast({
+                      title: "Déconnexion réussie",
+                      description: "Vous avez été déconnecté avec succès",
+                    });
+                    navigate('/');
+                  }}
                 >
                   Déconnexion
                 </Button>
                 <Button 
-                  onClick={() => navigate('/dashboard')}
+                  onClick={handleDashboardClick}
                 >
                   Mon espace
                 </Button>
