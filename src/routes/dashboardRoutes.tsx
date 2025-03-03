@@ -4,6 +4,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import PatientDashboard from "@/pages/dashboard/PatientDashboard";
 import DoctorDashboard from "@/pages/dashboard/DoctorDashboard";
 import AdminDashboard from "@/pages/dashboard/AdminDashboard";
+import AppointmentsPage from "@/pages/dashboard/appointments/AppointmentsPage";
 
 export const dashboardRoutes = [
   <Route
@@ -28,4 +29,13 @@ export const dashboardRoutes = [
       </ProtectedRoute>
     }
   />,
+  <Route
+    key="appointments"
+    path="/dashboard/appointments"
+    element={
+      <ProtectedRoute>
+        <AppointmentsPage />
+      </ProtectedRoute>
+    }
+  />
 ];
