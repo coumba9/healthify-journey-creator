@@ -34,7 +34,7 @@ const FormStepNavigation = ({
         <Button
           type="button"
           onClick={onNext}
-          className={currentStep === 1 && !currentStep > 1 ? "w-full" : "ml-auto"}
+          className={currentStep === 1 ? "w-full" : "ml-auto"}
           disabled={isNextDisabled}
         >
           Suivant
