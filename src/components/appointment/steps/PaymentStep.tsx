@@ -52,16 +52,32 @@ const PaymentStep = ({ amount, onPaymentComplete }: PaymentStepProps) => {
       if (paymentResponse.success) {
         toast({
           title: "Paiement initié",
-          description: "Suivez les instructions sur votre téléphone pour compléter le paiement.",
+          description: "Vous êtes redirigé vers la plateforme de paiement...",
         });
         
-        // If this is a real integration, we would redirect to the payment URL
-        // window.location.href = paymentResponse.paymentUrl;
-        
-        // For demo purposes, we'll just simulate a successful payment
-        setTimeout(() => {
-          onPaymentComplete();
-        }, 3000);
+        // Redirect to the payment URL
+        if (paymentResponse.paymentUrl) {
+          // In a real production environment, we would redirect to the payment URL
+          window.location.href = paymentResponse.paymentUrl;
+          
+          // For demo purposes, we'll simulate a successful payment after redirection
+          // This is just for the demo; in a real app, you'd handle the callback from the payment provider
+          const demoMode = true;
+          if (demoMode) {
+            // Simulate redirection and callback for demo purposes
+            setTimeout(() => {
+              // Notify that we're simulating redirect
+              console.log(`Simulating redirect to payment gateway: ${paymentResponse.paymentUrl}`);
+              
+              // Simulate payment completion after "redirection"
+              setTimeout(() => {
+                onPaymentComplete();
+              }, 2000);
+            }, 1000);
+          }
+        } else {
+          setError("URL de paiement manquante. Veuillez réessayer.");
+        }
       } else {
         setError(paymentResponse.error || "Une erreur est survenue lors du traitement du paiement");
         toast({
