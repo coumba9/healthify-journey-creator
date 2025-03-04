@@ -5,6 +5,7 @@ import PatientDashboard from "@/pages/dashboard/PatientDashboard";
 import DoctorDashboard from "@/pages/dashboard/DoctorDashboard";
 import AdminDashboard from "@/pages/dashboard/AdminDashboard";
 import AppointmentsPage from "@/pages/dashboard/appointments/AppointmentsPage";
+import NewAppointmentForm from "@/components/appointment/NewAppointmentForm";
 
 export const dashboardRoutes = [
   <Route
@@ -35,6 +36,15 @@ export const dashboardRoutes = [
     element={
       <ProtectedRoute>
         <AppointmentsPage />
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="new-appointment"
+    path="/dashboard/appointments/new"
+    element={
+      <ProtectedRoute>
+        <NewAppointmentForm />
       </ProtectedRoute>
     }
   />
