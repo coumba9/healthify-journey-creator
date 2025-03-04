@@ -57,24 +57,11 @@ export const usePaymentProcessing = ({
         });
 
         if (paymentResponse.paymentUrl) {
-          // In a real production environment, we would redirect to the payment URL
+          // Redirection réelle vers la plateforme de paiement
           window.location.href = paymentResponse.paymentUrl;
-
-          // For demo purposes, we'll simulate a successful payment after redirection
-          const demoMode = true;
-          if (demoMode) {
-            // Simulate redirection and callback for demo purposes
-            setTimeout(() => {
-              console.log(
-                `Simulating redirect to payment gateway: ${paymentResponse.paymentUrl}`
-              );
-
-              // Simulate payment completion after "redirection"
-              setTimeout(() => {
-                onPaymentComplete();
-              }, 2000);
-            }, 1000);
-          }
+          
+          // Le callback onPaymentComplete sera appelé au retour de la plateforme
+          // via l'URL de retour configurée dans les services de paiement
         } else {
           setError("URL de paiement manquante. Veuillez réessayer.");
         }
