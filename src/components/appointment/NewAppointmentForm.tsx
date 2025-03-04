@@ -80,23 +80,38 @@ const NewAppointmentForm = () => {
     });
   };
 
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
+  const nextStep = () => {
+    if (step < STEPS.length) {
+      setStep(step + 1);
+    }
+  };
+  
+  const prevStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
 
   const isStepComplete = (stepNumber: number) => {
     if (stepNumber === 1) {
-      return formData.name && formData.email && formData.phone;
+      // Patient info step
+      if (user) return true; // User is already logged in
+      return Boolean(formData.name && formData.email && formData.phone);
     }
     if (stepNumber === 2) {
-      return formData.consultationType && formData.service;
+      // Consultation type step
+      return Boolean(formData.consultationType && 
+        (formData.consultationType === "teleconsultation" || formData.service));
     }
     if (stepNumber === 3) {
-      return formData.date && formData.time;
+      // Date time step
+      return Boolean(formData.date && formData.time);
     }
     if (stepNumber === 4) {
-      return true; // Optional step
+      // Medical info step - optional
+      return true;
     }
-    return false;
+    return true;
   };
 
   const renderStep = () => {

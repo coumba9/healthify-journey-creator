@@ -44,7 +44,7 @@ const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
       </div>
 
       <div className="flex justify-center gap-2 mt-4">
-        {steps.map((s) => (
+        {steps.map((s, index) => (
           <div
             key={s.id}
             className={`flex items-center ${
@@ -66,7 +66,7 @@ const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
                 s.id
               )}
             </div>
-            {s.id < steps.length && (
+            {index < steps.length - 1 && (
               <div
                 className={`w-8 h-0.5 ${
                   s.id < currentStep ? "bg-primary" : "bg-gray-200"

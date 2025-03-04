@@ -29,15 +29,23 @@ const FormStepNavigation = ({
           Précédent
         </Button>
       )}
-      {currentStep < totalSteps && (
+      
+      {currentStep < totalSteps ? (
         <Button
           type="button"
           onClick={onNext}
-          className={currentStep === 1 ? "w-full" : "ml-auto"}
+          className={currentStep === 1 && !currentStep > 1 ? "w-full" : "ml-auto"}
           disabled={isNextDisabled}
         >
           Suivant
           <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      ) : (
+        <Button
+          type="submit"
+          className="ml-auto"
+        >
+          Terminer
         </Button>
       )}
     </div>
