@@ -40,6 +40,11 @@ const DoctorCard = ({ doctor, onBookAppointment }: DoctorCardProps) => {
     }).join(', ');
   };
 
+  const handleViewProfile = () => {
+    // Navigation vers la page de profil du médecin
+    navigate(`/doctor/${doctor.id}`);
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <CardHeader className="pb-2">
@@ -107,7 +112,7 @@ const DoctorCard = ({ doctor, onBookAppointment }: DoctorCardProps) => {
         <Button 
           variant="outline" 
           className="flex-1"
-          onClick={() => navigate(`/doctor/${doctor.id}`)}
+          onClick={handleViewProfile}
         >
           Voir le profil
         </Button>
