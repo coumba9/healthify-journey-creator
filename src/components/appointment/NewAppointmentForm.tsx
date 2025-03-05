@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -17,6 +17,7 @@ import MedicalInfoStep from "./steps/MedicalInfoStep";
 import PaymentStep from "./steps/PaymentStep";
 import StepIndicator, { Step } from "./form/StepIndicator";
 import FormStepNavigation from "./form/FormStepNavigation";
+import { twilioService } from "@/services/twilioService";
 
 const STEPS: Step[] = [
   { id: 1, title: "Informations personnelles", icon: "👤" },
@@ -35,7 +36,7 @@ const NewAppointmentForm = () => {
     // Patient info
     name: user?.name || "",
     email: user?.email || "",
-    phone: "",
+    phone: user?.phone || "",
     forSomeoneElse: false,
     beneficiaryName: "",
     
@@ -62,6 +63,18 @@ const NewAppointmentForm = () => {
     smsReminder: true,
   });
 
+  // Update form data when user data changes
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone
+      }));
+    }
+  }, [user]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Appointment data:", formData);
@@ -69,6 +82,21 @@ const NewAppointmentForm = () => {
       title: "Rendez-vous programmé",
       description: "Nous vous contacterons pour confirmer votre rendez-vous.",
     });
+    
+    // Send confirmation SMS if phone number is available and SMS reminders are enabled
+    if (formData.smsReminder && formData.phone) {
+      console.log("Sending appointment confirmation SMS to:", formData.phone);
+      twilioService.sendAppointmentReminder(
+        formData.phone,
+        "Cabinet Médical", // Replace with actual doctor name when available
+        formData.date,
+        formData.time
+      ).then(result => {
+        console.log("SMS confirmation result:", result);
+      }).catch(error => {
+        console.error("Error sending confirmation SMS:", error);
+      });
+    }
   };
 
   const handlePaymentComplete = () => {

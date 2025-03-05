@@ -1,7 +1,9 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useEffect } from "react";
 
 interface PatientInfoStepProps {
   formData: {
@@ -23,6 +25,24 @@ const PatientInfoStep = ({
   setCreateAccount,
 }: PatientInfoStepProps) => {
   const { user } = useAuth();
+
+  // Update form data when user data changes
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone
+      }));
+    }
+  }, [user, setFormData]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Allow only digits, spaces, plus sign, and parentheses in phone number
+    const value = e.target.value.replace(/[^\d\s+()]/g, '');
+    setFormData({ ...formData, phone: value });
+  };
 
   return (
     <div className="space-y-4">
@@ -55,11 +75,14 @@ const PatientInfoStep = ({
             <Input
               id="phone"
               type="tel"
-              placeholder="Téléphone"
+              placeholder="+221 XX XXX XX XX"
               value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              onChange={handlePhoneChange}
               required
             />
+            <p className="text-xs text-muted-foreground">
+              Format: code pays + numéro (ex: +221 77 123 45 67)
+            </p>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -70,6 +93,24 @@ const PatientInfoStep = ({
             <Label htmlFor="createAccount" className="text-sm">
               Créer un compte pour gérer mes rendez-vous
             </Label>
+          </div>
+        </div>
+      )}
+      
+      {user && (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="phone">Téléphone</Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="+221 XX XXX XX XX"
+              value={formData.phone}
+              onChange={handlePhoneChange}
+            />
+            <p className="text-xs text-muted-foreground">
+              Format: code pays + numéro (ex: +221 77 123 45 67)
+            </p>
           </div>
         </div>
       )}

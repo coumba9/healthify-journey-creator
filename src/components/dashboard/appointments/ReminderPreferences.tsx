@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -20,11 +20,19 @@ const ReminderPreferences = () => {
   const [isSending, setIsSending] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Update phone number field when user data changes
+  useEffect(() => {
+    if (user?.phone) {
+      setPhoneNumber(user.phone);
+    }
+  }, [user]);
+
   const handleSavePreferences = async () => {
     setIsSaving(true);
     try {
       // Si le SMS est activé, mettre à jour le numéro de téléphone
       if (smsEnabled && phoneNumber && user) {
+        console.log("Updating user profile with phone:", phoneNumber);
         await updateProfile({ phone: phoneNumber });
       }
       
@@ -37,6 +45,7 @@ const ReminderPreferences = () => {
         setIsSaving(false);
       }, 800);
     } catch (error) {
+      console.error("Error saving preferences:", error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la sauvegarde des préférences.",
@@ -47,7 +56,7 @@ const ReminderPreferences = () => {
   };
 
   const handleTestSMS = async () => {
-    if (!phoneNumber || phoneNumber.length < 10) {
+    if (!phoneNumber || phoneNumber.trim().length < 8) {
       toast({
         title: "Erreur",
         description: "Veuillez saisir un numéro de téléphone valide.",
@@ -57,8 +66,11 @@ const ReminderPreferences = () => {
     }
 
     setIsSending(true);
+    console.log("Sending test SMS to:", phoneNumber);
+    
     try {
       const result = await twilioService.sendTestSMS(phoneNumber);
+      console.log("SMS test result:", result);
       
       if (result.success) {
         toast({
@@ -73,12 +85,12 @@ const ReminderPreferences = () => {
         });
       }
     } catch (error) {
+      console.error("SMS error:", error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de l'envoi du SMS.",
         variant: "destructive",
       });
-      console.error("SMS error:", error);
     } finally {
       setIsSending(false);
     }
