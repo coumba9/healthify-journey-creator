@@ -11,6 +11,7 @@ import Pricing from "@/pages/Pricing";
 import Features from "@/pages/Features";
 import FirstAid from "@/pages/FirstAid";
 import DoctorsPage from "@/pages/DoctorsPage";
+import DoctorProfilePage from "@/pages/DoctorProfilePage";
 
 export const publicRoutes = (
   <>
@@ -25,5 +26,6 @@ export const publicRoutes = (
     <Route path="/features" element={<Features />} />
     <Route path="/first-aid" element={<FirstAid />} />
     <Route path="/doctors" element={<DoctorsPage />} />
+    <Route path="/doctor/:id" element={<DoctorProfilePage />} />
   </>
 );
