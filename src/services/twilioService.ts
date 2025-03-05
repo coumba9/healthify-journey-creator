@@ -12,23 +12,23 @@ class MockTwilioService {
   async sendSMS(to: string, body: string): Promise<{ success: boolean; message: string }> {
     console.log(`[MOCK TWILIO] Sending SMS to ${to}: ${body}`);
     
+    // Format phone number correctly
+    const formattedNumber = this.formatPhoneNumber(to);
+    if (!formattedNumber) {
+      return { 
+        success: false, 
+        message: "Format de numéro invalide. Utilisez le format +221 XX XXX XX XX" 
+      };
+    }
+    
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Randomly succeed or fail to simulate real-world conditions
-    const success = Math.random() > 0.1; // 90% success rate
-    
-    if (success) {
-      return { 
-        success: true, 
-        message: `SMS sent successfully to ${to}` 
-      };
-    } else {
-      return { 
-        success: false, 
-        message: "Failed to send SMS: Network error" 
-      };
-    }
+    // Simulate success for testing
+    return { 
+      success: true, 
+      message: `SMS envoyé avec succès à ${to}` 
+    };
   }
 
   // Simulate sending a test message
@@ -48,6 +48,24 @@ class MockTwilioService {
   ): Promise<{ success: boolean; message: string }> {
     const body = `Rappel: Vous avez un rendez-vous avec Dr. ${doctorName} le ${date} à ${time}. Merci de confirmer votre présence.`;
     return this.sendSMS(to, body);
+  }
+
+  // Helper to format phone numbers
+  private formatPhoneNumber(phone: string): string | null {
+    // Remove spaces and other non-digit characters except for the + sign
+    const cleaned = phone.replace(/[^\d+]/g, '');
+    
+    // Check if it starts with + and has a reasonable length
+    if (cleaned.startsWith('+') && cleaned.length >= 10) {
+      return cleaned;
+    }
+    
+    // Add +221 prefix if it's just digits and seems like a valid number
+    if (/^\d+$/.test(cleaned) && cleaned.length >= 9) {
+      return `+221${cleaned}`;
+    }
+    
+    return null;
   }
 }
 

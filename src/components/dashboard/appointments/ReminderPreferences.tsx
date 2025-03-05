@@ -8,21 +8,42 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { twilioService } from "@/services/twilioService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ReminderPreferences = () => {
   const { toast } = useToast();
+  const { user, updateProfile } = useAuth();
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [timePreference, setTimePreference] = useState("24h");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(user?.phone || "");
   const [isSending, setIsSending] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSavePreferences = () => {
-    // Ici, nous simulons la sauvegarde des préférences
-    toast({
-      title: "Préférences enregistrées",
-      description: "Vos préférences de rappel ont été mises à jour avec succès.",
-    });
+  const handleSavePreferences = async () => {
+    setIsSaving(true);
+    try {
+      // Si le SMS est activé, mettre à jour le numéro de téléphone
+      if (smsEnabled && phoneNumber && user) {
+        await updateProfile({ phone: phoneNumber });
+      }
+      
+      // Ici, nous simulons la sauvegarde des préférences
+      setTimeout(() => {
+        toast({
+          title: "Préférences enregistrées",
+          description: "Vos préférences de rappel ont été mises à jour avec succès.",
+        });
+        setIsSaving(false);
+      }, 800);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la sauvegarde des préférences.",
+        variant: "destructive",
+      });
+      setIsSaving(false);
+    }
   };
 
   const handleTestSMS = async () => {
@@ -141,8 +162,12 @@ const ReminderPreferences = () => {
           </div>
         </div>
 
-        <Button onClick={handleSavePreferences} className="w-full">
-          Enregistrer les préférences
+        <Button 
+          onClick={handleSavePreferences} 
+          className="w-full"
+          disabled={isSaving}
+        >
+          {isSaving ? "Enregistrement..." : "Enregistrer les préférences"}
         </Button>
       </CardContent>
     </Card>

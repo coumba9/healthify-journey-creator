@@ -1,3 +1,4 @@
+
 import { Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AppointmentsPage from "@/pages/dashboard/appointments/AppointmentsPage";
@@ -6,6 +7,7 @@ import DocumentsPage from "@/pages/dashboard/documents/DocumentsPage";
 import MessagesPage from "@/pages/dashboard/messages/MessagesPage";
 import NotificationsPage from "@/pages/dashboard/notifications/NotificationsPage";
 import PaymentsPage from "@/pages/dashboard/payments/PaymentsPage";
+import PatientProfilePage from "@/pages/dashboard/profile/PatientProfilePage";
 
 export const patientRoutes = [
   <Route
@@ -59,6 +61,15 @@ export const patientRoutes = [
     element={
       <ProtectedRoute allowedRoles={["patient"]}>
         <PaymentsPage />
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="profile"
+    path="/dashboard/profile"
+    element={
+      <ProtectedRoute allowedRoles={["patient"]}>
+        <PatientProfilePage />
       </ProtectedRoute>
     }
   />,
