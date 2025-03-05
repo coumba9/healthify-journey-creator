@@ -1,5 +1,5 @@
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, Calendar, Clock, User, MapPin } from "lucide-react";
@@ -21,41 +21,51 @@ interface AppointmentTicketProps {
 const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
   const { toast } = useToast();
   const ticketRef = useRef<HTMLDivElement>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleDownload = async () => {
     if (!ticketRef.current) return;
 
+    setIsGenerating(true);
     try {
       toast({
         title: "Préparation du ticket",
         description: "Veuillez patienter pendant la génération du PDF...",
       });
 
-      // Capture du composant en tant qu'image
+      // Optimisation: ensure element is fully rendered before capture
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Capture component as image with better quality settings
       const canvas = await html2canvas(ticketRef.current, {
-        scale: 2, // Meilleure qualité
+        scale: 3, // Higher quality
         useCORS: true,
         logging: false,
-        backgroundColor: "#ffffff"
+        backgroundColor: "#ffffff",
+        allowTaint: true,
+        imageTimeout: 15000,
+        removeContainer: true
       });
 
-      // Création du PDF
+      // Create PDF with better quality
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a5",
+        compress: true
       });
 
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/png", 1.0);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      // Add image with compression options
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
       
-      // Génération du nom de fichier avec la date et l'ID du rendez-vous
+      // Generate filename with date and appointment ID
       const fileName = `ticket_rdv_${appointment.id}_${new Date().toISOString().split('T')[0]}.pdf`;
       
-      // Téléchargement du PDF
+      // Save PDF
       pdf.save(fileName);
 
       toast({
@@ -66,9 +76,11 @@ const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
       console.error("Erreur lors du téléchargement du ticket:", error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue lors du téléchargement du ticket.",
+        description: "Une erreur est survenue lors du téléchargement du ticket. Veuillez réessayer.",
         variant: "destructive",
       });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -110,9 +122,10 @@ const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
         <Button 
           onClick={handleDownload}
           className="w-full mt-4 gap-2"
+          disabled={isGenerating}
         >
           <Download className="h-4 w-4" />
-          Télécharger le ticket
+          {isGenerating ? "Génération en cours..." : "Télécharger le ticket"}
         </Button>
       </CardContent>
     </Card>

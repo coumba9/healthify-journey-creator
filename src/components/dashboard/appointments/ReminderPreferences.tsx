@@ -1,16 +1,21 @@
+
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Bell, Mail, MessageSquare } from "lucide-react";
+import { Bell, Mail, MessageSquare, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { twilioService } from "@/services/twilioService";
 
 const ReminderPreferences = () => {
   const { toast } = useToast();
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [timePreference, setTimePreference] = useState("24h");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   const handleSavePreferences = () => {
     // Ici, nous simulons la sauvegarde des préférences
@@ -18,6 +23,44 @@ const ReminderPreferences = () => {
       title: "Préférences enregistrées",
       description: "Vos préférences de rappel ont été mises à jour avec succès.",
     });
+  };
+
+  const handleTestSMS = async () => {
+    if (!phoneNumber || phoneNumber.length < 10) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez saisir un numéro de téléphone valide.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const result = await twilioService.sendTestSMS(phoneNumber);
+      
+      if (result.success) {
+        toast({
+          title: "SMS envoyé",
+          description: "Un SMS de test a été envoyé à votre numéro.",
+        });
+      } else {
+        toast({
+          title: "Échec de l'envoi",
+          description: result.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi du SMS.",
+        variant: "destructive",
+      });
+      console.error("SMS error:", error);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -53,6 +96,33 @@ const ReminderPreferences = () => {
               onCheckedChange={setSmsEnabled}
             />
           </div>
+
+          {smsEnabled && (
+            <div className="space-y-2 pt-2 pb-2 border-t border-b">
+              <Label htmlFor="phone-number">Numéro de téléphone pour les SMS</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="phone-number"
+                  type="tel"
+                  placeholder="+221 XX XXX XX XX"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleTestSMS}
+                  disabled={isSending || !phoneNumber}
+                >
+                  {isSending ? "Envoi..." : "Tester"}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Format: code pays + numéro (ex: +221 77 123 45 67)
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
