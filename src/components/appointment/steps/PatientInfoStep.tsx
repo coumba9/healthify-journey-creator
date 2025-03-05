@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
+import { twilioService } from "@/services/twilioService";
 
 interface PatientInfoStepProps {
   formData: {
@@ -39,9 +40,30 @@ const PatientInfoStep = ({
   }, [user, setFormData]);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Allow only digits, spaces, plus sign, and parentheses in phone number
+    // Allow digits, spaces, plus sign, and parentheses in phone number
     const value = e.target.value.replace(/[^\d\s+()]/g, '');
-    setFormData({ ...formData, phone: value });
+    
+    // Format as we type to encourage international format
+    let formattedValue = value;
+    
+    // If it doesn't start with +, add the country code for convenience
+    if (value.length > 0 && !value.startsWith('+') && !value.startsWith('00')) {
+      if (!value.startsWith('221')) {
+        formattedValue = `+221 ${value}`;
+      } else {
+        formattedValue = `+${value}`;
+      }
+    }
+    
+    setFormData({ ...formData, phone: formattedValue });
+  };
+
+  const validatePhoneNumber = () => {
+    if (!formData.phone) return true; // Empty is valid (required is handled elsewhere)
+    
+    // Use the Twilio service's format function to validate
+    const formatted = twilioService['formatPhoneNumber'](formData.phone);
+    return !!formatted;
   };
 
   return (
@@ -79,10 +101,16 @@ const PatientInfoStep = ({
               value={formData.phone}
               onChange={handlePhoneChange}
               required
+              className={!validatePhoneNumber() ? "border-red-500" : ""}
             />
             <p className="text-xs text-muted-foreground">
               Format: code pays + numéro (ex: +221 77 123 45 67)
             </p>
+            {!validatePhoneNumber() && (
+              <p className="text-xs text-red-500">
+                Le format du numéro de téléphone est invalide
+              </p>
+            )}
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -107,10 +135,16 @@ const PatientInfoStep = ({
               placeholder="+221 XX XXX XX XX"
               value={formData.phone}
               onChange={handlePhoneChange}
+              className={!validatePhoneNumber() ? "border-red-500" : ""}
             />
             <p className="text-xs text-muted-foreground">
               Format: code pays + numéro (ex: +221 77 123 45 67)
             </p>
+            {!validatePhoneNumber() && (
+              <p className="text-xs text-red-500">
+                Le format du numéro de téléphone est invalide
+              </p>
+            )}
           </div>
         </div>
       )}

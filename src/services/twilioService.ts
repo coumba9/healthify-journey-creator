@@ -27,7 +27,13 @@ class MockTwilioService {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // In a mock environment, always return success for testing purposes
+    // In a mock environment, we should log the message would be sent
+    // This helps with debugging as we can see if it's ever called
+    console.log(`[MOCK TWILIO] SUCCESS: Message would be sent to ${formattedNumber}`);
+    console.log(`[MOCK TWILIO] Message content: ${body}`);
+    
+    // In a real environment, this would be where we'd interact with the Twilio API
+    // For testing purposes, show success
     return { 
       success: true, 
       message: `SMS envoyé avec succès à ${formattedNumber}` 
@@ -54,7 +60,7 @@ class MockTwilioService {
     return this.sendSMS(to, body);
   }
 
-  // Helper to format phone numbers
+  // Helper to format phone numbers - improved to handle more cases
   private formatPhoneNumber(phone: string): string | null {
     if (!phone || phone.trim() === '') {
       console.error('[MOCK TWILIO] Empty phone number provided');

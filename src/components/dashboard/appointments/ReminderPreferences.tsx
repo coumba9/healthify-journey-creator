@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Bell, Mail, MessageSquare, Phone } from "lucide-react";
+import { Bell, Mail, MessageSquare, AlertCircle, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ const ReminderPreferences = () => {
   const [phoneNumber, setPhoneNumber] = useState(user?.phone || "");
   const [isSending, setIsSending] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [lastTestResult, setLastTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   // Update phone number field when user data changes
   useEffect(() => {
@@ -34,6 +35,20 @@ const ReminderPreferences = () => {
       if (smsEnabled && phoneNumber && user) {
         console.log("Updating user profile with phone:", phoneNumber);
         await updateProfile({ phone: phoneNumber });
+        
+        // Test the SMS functionality to ensure the number works
+        const testResult = await twilioService.sendTestSMS(phoneNumber);
+        setLastTestResult(testResult);
+        
+        if (!testResult.success) {
+          toast({
+            title: "Erreur de validation du numéro",
+            description: testResult.message,
+            variant: "destructive",
+          });
+          setIsSaving(false);
+          return;
+        }
       }
       
       // Ici, nous simulons la sauvegarde des préférences
@@ -66,11 +81,13 @@ const ReminderPreferences = () => {
     }
 
     setIsSending(true);
+    setLastTestResult(null);
     console.log("Sending test SMS to:", phoneNumber);
     
     try {
       const result = await twilioService.sendTestSMS(phoneNumber);
       console.log("SMS test result:", result);
+      setLastTestResult(result);
       
       if (result.success) {
         toast({
@@ -90,6 +107,10 @@ const ReminderPreferences = () => {
         title: "Erreur",
         description: "Une erreur est survenue lors de l'envoi du SMS.",
         variant: "destructive",
+      });
+      setLastTestResult({
+        success: false,
+        message: error instanceof Error ? error.message : "Erreur inconnue"
       });
     } finally {
       setIsSending(false);
@@ -154,6 +175,17 @@ const ReminderPreferences = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 Format: code pays + numéro (ex: +221 77 123 45 67)
               </p>
+              
+              {lastTestResult && (
+                <div className={`mt-2 p-2 rounded-md flex items-center gap-2 ${lastTestResult.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                  {lastTestResult.success ? (
+                    <CheckCircle className="h-4 w-4" />
+                  ) : (
+                    <AlertCircle className="h-4 w-4" />
+                  )}
+                  <span className="text-xs">{lastTestResult.message}</span>
+                </div>
+              )}
             </div>
           )}
         </div>

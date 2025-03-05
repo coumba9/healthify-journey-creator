@@ -7,10 +7,15 @@ import ReminderPreferences from "@/components/dashboard/appointments/ReminderPre
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { PlusCircle } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { PlusCircle, Info } from "lucide-react";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const AppointmentsPage = () => {
+  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
+  
   // Exemple de données de rendez-vous confirmés (à remplacer par des vraies données)
   const confirmedAppointments = [
     {
@@ -30,6 +35,38 @@ const AppointmentsPage = () => {
       speciality: "Dermatologie"
     }
   ];
+
+  // Handle status params from payment redirects
+  useEffect(() => {
+    const status = searchParams.get('status');
+    if (status === 'success') {
+      toast({
+        title: "Paiement réussi",
+        description: "Votre rendez-vous a été confirmé avec succès.",
+      });
+    } else if (status === 'cancelled') {
+      toast({
+        title: "Paiement annulé",
+        description: "Votre paiement a été annulé. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    }
+    
+    // Handle SMS status
+    const smsStatus = searchParams.get('smsStatus');
+    if (smsStatus === 'sent') {
+      toast({
+        title: "SMS envoyé",
+        description: "Un message de confirmation a été envoyé à votre numéro de téléphone.",
+      });
+    } else if (smsStatus === 'failed') {
+      toast({
+        title: "Envoi SMS échoué",
+        description: "Le SMS n'a pas pu être envoyé. Vérifiez votre numéro de téléphone.",
+        variant: "destructive",
+      });
+    }
+  }, [searchParams, toast]);
 
   return (
     <DashboardLayout>
@@ -69,6 +106,15 @@ const AppointmentsPage = () => {
                   </Link>
                 </Button>
               </div>
+              
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md flex items-start gap-2">
+                <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+                <div className="text-sm text-blue-700">
+                  <p className="font-medium">Information sur les SMS</p>
+                  <p>Pour recevoir des rappels par SMS, assurez-vous d'avoir activé cette option dans l'onglet "Préférences de rappel" et d'avoir entré un numéro de téléphone valide au format international (ex: +221 77 123 45 67).</p>
+                </div>
+              </div>
+              
               <AppointmentForm />
             </Card>
           </TabsContent>
