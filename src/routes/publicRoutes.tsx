@@ -1,4 +1,3 @@
-
 import { Route } from "react-router-dom";
 import Index from "@/pages/Index";
 import About from "@/pages/About";
@@ -12,6 +11,7 @@ import Features from "@/pages/Features";
 import FirstAid from "@/pages/FirstAid";
 import DoctorsPage from "@/pages/DoctorsPage";
 import DoctorProfilePage from "@/pages/DoctorProfilePage";
+import Documentation from "@/pages/Documentation";
 
 export const publicRoutes = (
   <>
@@ -27,5 +27,6 @@ export const publicRoutes = (
     <Route path="/first-aid" element={<FirstAid />} />
     <Route path="/doctors" element={<DoctorsPage />} />
     <Route path="/doctor/:id" element={<DoctorProfilePage />} />
+    <Route path="/documentation" element={<Documentation />} />
   </>
 );
