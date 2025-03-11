@@ -46,6 +46,7 @@ const NewAppointmentForm = () => {
     service: "",
     consultationType: "cabinet",
     urgency: false,
+    teleconsultationDevice: "computer",
     reason: "",
     symptoms: "",
     
@@ -95,6 +96,14 @@ const NewAppointmentForm = () => {
         console.log("SMS confirmation result:", result);
       }).catch(error => {
         console.error("Error sending confirmation SMS:", error);
+      });
+    }
+    
+    // Spécifique pour les téléconsultations
+    if (formData.consultationType === "teleconsultation") {
+      toast({
+        title: "Téléconsultation programmée",
+        description: `Vous recevrez un lien pour rejoindre la consultation par email. Assurez-vous que votre ${formData.teleconsultationDevice === "computer" ? "ordinateur" : "smartphone/tablette"} est équipé d'une caméra et d'un microphone.`,
       });
     }
   };
@@ -177,7 +186,7 @@ const NewAppointmentForm = () => {
       case 5:
         return (
           <PaymentStep
-            amount={15000}
+            amount={formData.consultationType === "teleconsultation" ? 12000 : 15000}
             onPaymentComplete={handlePaymentComplete}
           />
         );

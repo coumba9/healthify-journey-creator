@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -8,8 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Calendar, Clock, User, FileText } from "lucide-react";
+import { Calendar, Clock, User, FileText, Video } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import AppointmentFilters from "./AppointmentFilters";
 import AppointmentStatus from "./AppointmentStatus";
 import AppointmentActions from "./AppointmentActions";
@@ -38,10 +40,12 @@ interface Appointment {
   };
   notes?: string;
   speciality?: string;
+  isTeleconsultation?: boolean;
 }
 
 const AppointmentList = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"date" | "status">("date");
@@ -80,6 +84,23 @@ const AppointmentList = () => {
         phone: user?.phone || "Non spécifié",
         email: user?.email || "Non spécifié"
       }
+    },
+    {
+      id: "3",
+      date: "2024-03-22",
+      time: "14:00",
+      patientId: user?.id || "",
+      patientName: user?.name || "Non spécifié",
+      doctorName: "Dr. Martin",
+      status: "confirmed",
+      type: "Téléconsultation",
+      speciality: "Dermatologie",
+      isTeleconsultation: true,
+      contactInfo: {
+        phone: user?.phone || "Non spécifié",
+        email: user?.email || "Non spécifié"
+      },
+      notes: "Préparez vos questions avant la session"
     }
   ];
 
@@ -104,6 +125,10 @@ const AppointmentList = () => {
         return a.status.localeCompare(b.status);
       }
     });
+
+  const handleJoinTeleconsultation = (appointmentId: string) => {
+    navigate(`/dashboard/teleconsultation/${appointmentId}`);
+  };
 
   return (
     <div className="space-y-4">
@@ -152,7 +177,12 @@ const AppointmentList = () => {
                   </TableCell>
                   <TableCell>{appointment.time}</TableCell>
                   <TableCell>{appointment.doctorName}</TableCell>
-                  <TableCell>{appointment.type}</TableCell>
+                  <TableCell className="flex items-center gap-1">
+                    {appointment.isTeleconsultation && (
+                      <Video className="h-4 w-4 text-blue-500" />
+                    )}
+                    {appointment.type}
+                  </TableCell>
                   <TableCell>
                     <AppointmentStatus status={appointment.status} />
                   </TableCell>
@@ -163,10 +193,24 @@ const AppointmentList = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <AppointmentActions
-                      appointmentId={appointment.id}
-                      status={appointment.status}
-                    />
+                    <div className="flex gap-2">
+                      <AppointmentActions
+                        appointmentId={appointment.id}
+                        status={appointment.status}
+                      />
+                      
+                      {appointment.isTeleconsultation && appointment.status === "confirmed" && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                          onClick={() => handleJoinTeleconsultation(appointment.id)}
+                        >
+                          <Video className="h-4 w-4 mr-2" />
+                          Rejoindre
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     {appointment.status === "confirmed" && (
