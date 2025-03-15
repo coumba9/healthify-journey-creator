@@ -9,6 +9,7 @@ import AppointmentDetailsPage from "@/pages/dashboard/doctor/AppointmentDetailsP
 import AvailabilityPage from "@/pages/dashboard/doctor/AvailabilityPage";
 import DocumentsPage from "@/pages/dashboard/documents/DocumentsPage";
 import MessagesPage from "@/pages/dashboard/messages/MessagesPage";
+import TeleconsultationPage from "@/pages/dashboard/teleconsultation/TeleconsultationPage";
 
 export const doctorRoutes = [
   <Route
@@ -80,6 +81,15 @@ export const doctorRoutes = [
     element={
       <ProtectedRoute allowedRoles={["doctor"]}>
         <MessagesPage />
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="doctor-teleconsultation"
+    path="/dashboard/teleconsultation/:appointmentId"
+    element={
+      <ProtectedRoute allowedRoles={["doctor"]}>
+        <TeleconsultationPage />
       </ProtectedRoute>
     }
   />,

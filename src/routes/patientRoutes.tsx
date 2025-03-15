@@ -11,7 +11,7 @@ import PatientProfilePage from "@/pages/dashboard/profile/PatientProfilePage";
 import DocumentsPage from "@/pages/dashboard/documents/DocumentsPage";
 import PrescriptionsPage from "@/pages/dashboard/prescriptions/PrescriptionsPage";
 import PaymentsPage from "@/pages/dashboard/payments/PaymentsPage";
-import TeleconsultationPage from "@/pages/TeleconsultationPage";
+import TeleconsultationPage from "@/pages/dashboard/teleconsultation/TeleconsultationPage";
 
 export const patientRoutes = [
   <Route
@@ -106,7 +106,7 @@ export const patientRoutes = [
   />,
   <Route
     key="teleconsultation"
-    path="/teleconsultation/:id?"
+    path="/dashboard/teleconsultation/:appointmentId"
     element={
       <ProtectedRoute allowedRoles={["patient", "doctor"]}>
         <TeleconsultationPage />

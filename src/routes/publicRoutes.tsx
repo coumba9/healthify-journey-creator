@@ -17,6 +17,7 @@ import Documentation from "@/pages/Documentation";
 import Appointment from "@/pages/Appointment";
 import AppointmentConfirmation from "@/pages/AppointmentConfirmation";
 import AppointmentDetails from "@/pages/AppointmentDetails";
+import TeleconsultationPage from "@/pages/TeleconsultationPage";
 
 export const publicRoutes = [
   <Route key="home" path="/" element={<Index />} />,
@@ -36,4 +37,5 @@ export const publicRoutes = [
   <Route key="appointment" path="/appointment" element={<Appointment />} />,
   <Route key="appointment-confirmation" path="/appointment-confirmation" element={<AppointmentConfirmation />} />,
   <Route key="appointment-details" path="/appointment/:id" element={<AppointmentDetails />} />,
+  <Route key="teleconsultation" path="/teleconsultation/:id" element={<TeleconsultationPage />} />,
 ];
