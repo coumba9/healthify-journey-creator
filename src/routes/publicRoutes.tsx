@@ -1,3 +1,4 @@
+
 import { Route } from "react-router-dom";
 import Index from "@/pages/Index";
 import About from "@/pages/About";
@@ -5,28 +6,28 @@ import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
-import FAQ from "@/pages/FAQ";
-import Pricing from "@/pages/Pricing";
-import Features from "@/pages/Features";
-import FirstAid from "@/pages/FirstAid";
 import DoctorsPage from "@/pages/DoctorsPage";
 import DoctorProfilePage from "@/pages/DoctorProfilePage";
+import FAQ from "@/pages/FAQ";
+import FirstAid from "@/pages/FirstAid";
+import Features from "@/pages/Features";
+import Pricing from "@/pages/Pricing";
+import Services from "@/pages/Services";
 import Documentation from "@/pages/Documentation";
 
-export const publicRoutes = (
-  <>
-    <Route path="/" element={<Index />} />
-    <Route path="/about" element={<About />} />
-    <Route path="/contact" element={<Contact />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="/reset-password" element={<ResetPassword />} />
-    <Route path="/faq" element={<FAQ />} />
-    <Route path="/pricing" element={<Pricing />} />
-    <Route path="/features" element={<Features />} />
-    <Route path="/first-aid" element={<FirstAid />} />
-    <Route path="/doctors" element={<DoctorsPage />} />
-    <Route path="/doctor/:id" element={<DoctorProfilePage />} />
-    <Route path="/documentation" element={<Documentation />} />
-  </>
-);
+export const publicRoutes = [
+  <Route key="home" path="/" element={<Index />} />,
+  <Route key="about" path="/about" element={<About />} />,
+  <Route key="contact" path="/contact" element={<Contact />} />,
+  <Route key="login" path="/login" element={<Login />} />,
+  <Route key="register" path="/register" element={<Register />} />,
+  <Route key="reset-password" path="/reset-password" element={<ResetPassword />} />,
+  <Route key="doctors" path="/doctors" element={<DoctorsPage />} />,
+  <Route key="doctor-profile" path="/doctors/:id" element={<DoctorProfilePage />} />,
+  <Route key="faq" path="/faq" element={<FAQ />} />,
+  <Route key="first-aid" path="/first-aid" element={<FirstAid />} />,
+  <Route key="features" path="/features" element={<Features />} />,
+  <Route key="pricing" path="/pricing" element={<Pricing />} />,
+  <Route key="services" path="/services" element={<Services />} />,
+  <Route key="documentation" path="/documentation" element={<Documentation />} />,
+];
