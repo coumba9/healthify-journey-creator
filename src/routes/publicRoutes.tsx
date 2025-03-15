@@ -15,6 +15,8 @@ import Pricing from "@/pages/Pricing";
 import Services from "@/pages/Services";
 import Documentation from "@/pages/Documentation";
 import Appointment from "@/pages/Appointment";
+import AppointmentConfirmation from "@/pages/AppointmentConfirmation";
+import AppointmentDetails from "@/pages/AppointmentDetails";
 
 export const publicRoutes = [
   <Route key="home" path="/" element={<Index />} />,
@@ -32,4 +34,6 @@ export const publicRoutes = [
   <Route key="services" path="/services" element={<Services />} />,
   <Route key="documentation" path="/documentation" element={<Documentation />} />,
   <Route key="appointment" path="/appointment" element={<Appointment />} />,
+  <Route key="appointment-confirmation" path="/appointment-confirmation" element={<AppointmentConfirmation />} />,
+  <Route key="appointment-details" path="/appointment/:id" element={<AppointmentDetails />} />,
 ];

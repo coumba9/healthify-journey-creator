@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -19,6 +20,10 @@ import StepIndicator, { Step } from "./form/StepIndicator";
 import FormStepNavigation from "./form/FormStepNavigation";
 import { twilioService } from "@/services/twilioService";
 
+interface NewAppointmentFormProps {
+  preselectedService?: string;
+}
+
 const STEPS: Step[] = [
   { id: 1, title: "Informations personnelles", icon: "👤" },
   { id: 2, title: "Type de consultation", icon: "🏥" },
@@ -27,9 +32,11 @@ const STEPS: Step[] = [
   { id: 5, title: "Paiement", icon: "💳" },
 ];
 
-const NewAppointmentForm = () => {
+const NewAppointmentForm = ({ preselectedService = "" }: NewAppointmentFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState(1);
   const [createAccount, setCreateAccount] = useState(false);
   const [formData, setFormData] = useState({
@@ -43,7 +50,7 @@ const NewAppointmentForm = () => {
     // Appointment details
     date: "",
     time: "",
-    service: "",
+    service: preselectedService || "",
     consultationType: "cabinet",
     urgency: false,
     teleconsultationDevice: "computer",
@@ -64,7 +71,7 @@ const NewAppointmentForm = () => {
     smsReminder: true,
   });
 
-  // Update form data when user data changes
+  // Update form data when user data changes or preselected service changes
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -74,15 +81,29 @@ const NewAppointmentForm = () => {
         phone: user.phone || prev.phone
       }));
     }
-  }, [user]);
+    
+    if (preselectedService) {
+      setFormData(prev => ({
+        ...prev,
+        service: preselectedService
+      }));
+    }
+  }, [user, preselectedService]);
+
+  // Check if we're rescheduling
+  useEffect(() => {
+    const isRescheduling = location.state?.isRescheduling;
+    if (isRescheduling) {
+      toast({
+        title: "Reprogrammation de rendez-vous",
+        description: "Vous êtes en train de reprogrammer un rendez-vous existant",
+      });
+    }
+  }, [location.state, toast]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Appointment data:", formData);
-    toast({
-      title: "Rendez-vous programmé",
-      description: "Nous vous contacterons pour confirmer votre rendez-vous.",
-    });
     
     // Send confirmation SMS if phone number is available and SMS reminders are enabled
     if (formData.smsReminder && formData.phone) {
@@ -99,13 +120,12 @@ const NewAppointmentForm = () => {
       });
     }
     
-    // Spécifique pour les téléconsultations
-    if (formData.consultationType === "teleconsultation") {
-      toast({
-        title: "Téléconsultation programmée",
-        description: `Vous recevrez un lien pour rejoindre la consultation par email. Assurez-vous que votre ${formData.teleconsultationDevice === "computer" ? "ordinateur" : "smartphone/tablette"} est équipé d'une caméra et d'un microphone.`,
-      });
-    }
+    // Rediriger vers la page de confirmation
+    navigate('/appointment-confirmation', { 
+      state: { 
+        appointmentData: formData
+      } 
+    });
   };
 
   const handlePaymentComplete = () => {
@@ -120,12 +140,14 @@ const NewAppointmentForm = () => {
   const nextStep = () => {
     if (step < STEPS.length) {
       setStep(step + 1);
+      window.scrollTo(0, 0);
     }
   };
   
   const prevStep = () => {
     if (step > 1) {
       setStep(step - 1);
+      window.scrollTo(0, 0);
     }
   };
 

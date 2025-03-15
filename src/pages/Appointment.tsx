@@ -28,7 +28,7 @@ const Appointment = () => {
           </p>
         </div>
 
-        <NewAppointmentForm />
+        <NewAppointmentForm preselectedService={preselectedService} />
 
         <div className="mt-8 text-center">
           <button 
