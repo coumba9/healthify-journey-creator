@@ -122,9 +122,8 @@ export function useAppointmentForm({
       return Boolean(formData.name && formData.email && formData.phone);
     }
     if (stepNumber === 2) {
-      // Consultation type step
-      return Boolean(formData.consultationType && 
-        (formData.consultationType === "teleconsultation" || formData.service));
+      // Consultation type step - service selection is now optional
+      return Boolean(formData.consultationType);
     }
     if (stepNumber === 3) {
       // Date time step

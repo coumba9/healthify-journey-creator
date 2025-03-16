@@ -45,13 +45,13 @@ const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
 
       <div className="flex justify-center gap-2 mt-4">
         {steps.map((s, index) => (
-          <div
+          <span
             key={s.id}
             className={`flex items-center ${
               s.id < currentStep ? "text-primary" : "text-gray-400"
             }`}
           >
-            <div
+            <span
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
                 s.id === currentStep
                   ? "bg-primary text-white"
@@ -65,15 +65,15 @@ const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
               ) : (
                 s.id
               )}
-            </div>
+            </span>
             {index < steps.length - 1 && (
-              <div
+              <span
                 className={`w-8 h-0.5 ${
                   s.id < currentStep ? "bg-primary" : "bg-gray-200"
                 }`}
               />
             )}
-          </div>
+          </span>
         ))}
       </div>
     </div>
