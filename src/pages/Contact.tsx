@@ -1,9 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import { BackButton } from "@/components/ui/back-button";
 import { useState } from "react";
 
 const Contact = () => {
@@ -28,6 +30,7 @@ const Contact = () => {
       <Navbar />
       <main className="flex-grow py-20">
         <div className="max-w-4xl mx-auto px-4">
+          <BackButton />
           <h1 className="text-3xl font-bold text-center mb-8">Contactez-nous</h1>
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <form onSubmit={handleSubmit} className="space-y-6">

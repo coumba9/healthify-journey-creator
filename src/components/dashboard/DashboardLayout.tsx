@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { BackButton } from "@/components/ui/back-button";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -37,6 +38,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <div className="min-h-screen flex w-full">
         <DashboardNav />
         <main className="flex-1 p-6 bg-gray-50">
+          <BackButton />
           {children}
         </main>
       </div>

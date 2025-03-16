@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NewAppointmentForm from "@/components/appointment/NewAppointmentForm";
 import { useToast } from "@/hooks/use-toast";
+import { BackButton } from "@/components/ui/back-button";
 
 const Appointment = () => {
   const location = useLocation();
@@ -25,6 +26,8 @@ const Appointment = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <div className="max-w-4xl mx-auto">
+        <BackButton />
+        
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {isRescheduling ? "Reprogrammer votre rendez-vous" : "Prendre un rendez-vous"}
@@ -41,15 +44,6 @@ const Appointment = () => {
           isRescheduling={isRescheduling}
           originalAppointmentId={originalAppointmentId}
         />
-
-        <div className="mt-8 text-center">
-          <button 
-            onClick={() => navigate(-1)} 
-            className="text-primary-600 hover:text-primary-800 transition-colors"
-          >
-            &larr; Retour
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import { BackButton } from "@/components/ui/back-button";
 
 interface MedicalRecord {
   id: string;
@@ -47,6 +48,7 @@ const HistoryPage = () => {
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto">
+        <BackButton />
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Historique Médical</h1>
           <History className="h-6 w-6 text-gray-500" />
