@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,6 +21,8 @@ import { twilioService } from "@/services/twilioService";
 
 interface NewAppointmentFormProps {
   preselectedService?: string;
+  isRescheduling?: boolean;
+  originalAppointmentId?: string | null;
 }
 
 const STEPS: Step[] = [
@@ -32,7 +33,11 @@ const STEPS: Step[] = [
   { id: 5, title: "Paiement", icon: "💳" },
 ];
 
-const NewAppointmentForm = ({ preselectedService = "" }: NewAppointmentFormProps) => {
+const NewAppointmentForm = ({ 
+  preselectedService = "", 
+  isRescheduling = false, 
+  originalAppointmentId = null 
+}: NewAppointmentFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -92,14 +97,14 @@ const NewAppointmentForm = ({ preselectedService = "" }: NewAppointmentFormProps
 
   // Check if we're rescheduling
   useEffect(() => {
-    const isRescheduling = location.state?.isRescheduling;
-    if (isRescheduling) {
+    const isReschedulingFromLocation = location.state?.isRescheduling;
+    if (isReschedulingFromLocation || isRescheduling) {
       toast({
         title: "Reprogrammation de rendez-vous",
         description: "Vous êtes en train de reprogrammer un rendez-vous existant",
       });
     }
-  }, [location.state, toast]);
+  }, [location.state, toast, isRescheduling]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -220,7 +225,9 @@ const NewAppointmentForm = ({ preselectedService = "" }: NewAppointmentFormProps
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Prendre un rendez-vous</CardTitle>
+        <CardTitle>
+          {isRescheduling ? "Reprogrammer un rendez-vous" : "Prendre un rendez-vous"}
+        </CardTitle>
         <CardDescription>
           <StepIndicator steps={STEPS} currentStep={step} />
         </CardDescription>
