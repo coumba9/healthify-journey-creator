@@ -19,9 +19,11 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <ChooseDoctorButton />
             
-            <Button variant="outline">
-              <Calendar className="mr-2 h-4 w-4" />
-              Prendre rendez-vous
+            <Button variant="outline" asChild>
+              <Link to="/appointment">
+                <Calendar className="mr-2 h-4 w-4" />
+                Prendre rendez-vous
+              </Link>
             </Button>
             
             <Link to="/services">
