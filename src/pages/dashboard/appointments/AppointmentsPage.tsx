@@ -11,28 +11,47 @@ import { Link, useSearchParams } from "react-router-dom";
 import { PlusCircle, Info } from "lucide-react";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { Appointment } from "@/types/appointment";
 
 const AppointmentsPage = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const { user } = useAuth();
   
-  // Exemple de données de rendez-vous confirmés (à remplacer par des vraies données)
-  const confirmedAppointments = [
+  // Example of appointment data that correctly matches the Appointment type
+  const confirmedAppointments: Appointment[] = [
     {
       id: "1",
-      date: "20 Mars 2024",
+      date: "2024-03-20",
       time: "14:00",
+      patientId: user?.id || "",
+      patientName: user?.name || "",
       doctorName: "Dr. Smith",
+      status: "confirmed",
+      type: "Consultation",
       location: "Cabinet Medical Central",
-      speciality: "Cardiologie"
+      speciality: "Cardiologie",
+      contactInfo: {
+        phone: user?.phone,
+        email: user?.email
+      }
     },
     {
       id: "2",
-      date: "25 Mars 2024",
+      date: "2024-03-25",
       time: "10:30",
+      patientId: user?.id || "",
+      patientName: user?.name || "",
       doctorName: "Dr. Johnson",
+      status: "confirmed",
+      type: "Suivi",
       location: "Clinique du Centre",
-      speciality: "Dermatologie"
+      speciality: "Dermatologie",
+      contactInfo: {
+        phone: user?.phone,
+        email: user?.email
+      }
     }
   ];
 
