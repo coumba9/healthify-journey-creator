@@ -5,7 +5,7 @@ export interface Appointment {
   time: string;
   patientId: string;
   patientName: string;
-  doctorName?: string; // Rendu optionnel
+  doctorName: string;
   status: "pending" | "confirmed" | "cancelled";
   type: string;
   location?: string;

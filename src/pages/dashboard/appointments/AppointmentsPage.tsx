@@ -19,7 +19,7 @@ const AppointmentsPage = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   
-  // Exemple de rendez-vous confirmés
+  // Example of appointment data that correctly matches the Appointment type
   const confirmedAppointments: Appointment[] = [
     {
       id: "1",
@@ -27,7 +27,7 @@ const AppointmentsPage = () => {
       time: "14:00",
       patientId: user?.id || "",
       patientName: user?.name || "",
-      doctorName: "Dr. Smith", // Optionnel maintenant
+      doctorName: "Dr. Smith",
       status: "confirmed",
       type: "Consultation",
       location: "Cabinet Medical Central",
@@ -43,7 +43,7 @@ const AppointmentsPage = () => {
       time: "10:30",
       patientId: user?.id || "",
       patientName: user?.name || "",
-      doctorName: "Dr. Johnson", // Optionnel maintenant
+      doctorName: "Dr. Johnson",
       status: "confirmed",
       type: "Suivi",
       location: "Clinique du Centre",
