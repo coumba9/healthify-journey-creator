@@ -1,19 +1,13 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
 import { twilioService } from "@/services/twilioService";
+import { AppointmentFormData } from "@/hooks/useAppointmentForm";
 
 interface PatientInfoStepProps {
-  formData: {
-    name: string;
-    email: string;
-    phone: string;
-    forSomeoneElse: boolean;
-    beneficiaryName: string;
-  };
+  formData: Pick<AppointmentFormData, 'name' | 'email' | 'phone' | 'forSomeoneElse' | 'beneficiaryName'>;
   setFormData: (data: any) => void;
   createAccount: boolean;
   setCreateAccount: (value: boolean) => void;
@@ -27,7 +21,6 @@ const PatientInfoStep = ({
 }: PatientInfoStepProps) => {
   const { user } = useAuth();
 
-  // Update form data when user data changes
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -40,13 +33,9 @@ const PatientInfoStep = ({
   }, [user, setFormData]);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Allow digits, spaces, plus sign, and parentheses in phone number
     const value = e.target.value.replace(/[^\d\s+()]/g, '');
-    
-    // Format as we type to encourage international format
     let formattedValue = value;
     
-    // If it doesn't start with +, add the country code for convenience
     if (value.length > 0 && !value.startsWith('+') && !value.startsWith('00')) {
       if (!value.startsWith('221')) {
         formattedValue = `+221 ${value}`;
@@ -59,9 +48,8 @@ const PatientInfoStep = ({
   };
 
   const validatePhoneNumber = () => {
-    if (!formData.phone) return true; // Empty is valid (required is handled elsewhere)
+    if (!formData.phone) return true;
     
-    // Use the Twilio service's format function to validate
     const formatted = twilioService['formatPhoneNumber'](formData.phone);
     return !!formatted;
   };

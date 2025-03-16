@@ -1,15 +1,10 @@
 import { Upload } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { AppointmentFormData } from "@/hooks/useAppointmentForm";
 
 interface MedicalInfoStepProps {
-  formData: {
-    reason: string;
-    symptoms: string;
-    allergies: string;
-    currentMedications: string;
-    documents: File[];
-  };
+  formData: Pick<AppointmentFormData, 'reason' | 'symptoms' | 'allergies' | 'currentMedications' | 'documents'>;
   setFormData: (data: any) => void;
 }
 

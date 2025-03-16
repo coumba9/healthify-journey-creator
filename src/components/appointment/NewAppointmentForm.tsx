@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import {
   Card,
@@ -10,101 +9,41 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import PatientInfoStep from "./steps/PatientInfoStep";
-import ConsultationTypeStep from "./steps/ConsultationTypeStep";
-import DateTimeStep from "./steps/DateTimeStep";
-import MedicalInfoStep from "./steps/MedicalInfoStep";
-import PaymentStep from "./steps/PaymentStep";
-import StepIndicator, { Step } from "./form/StepIndicator";
-import FormStepNavigation from "./form/FormStepNavigation";
 import { twilioService } from "@/services/twilioService";
+import { AppointmentFormData, useAppointmentForm } from "@/hooks/useAppointmentForm";
+import StepIndicator from "./form/StepIndicator";
+import FormStepNavigation from "./form/FormStepNavigation";
+import { FORM_STEPS } from "./form/StepConstants";
+import FormStepRenderer from "./form/FormStepRenderer";
 
-interface NewAppointmentFormProps {
+export interface NewAppointmentFormProps {
   preselectedService?: string;
   isRescheduling?: boolean;
   originalAppointmentId?: string | null;
 }
-
-const STEPS: Step[] = [
-  { id: 1, title: "Informations personnelles", icon: "👤" },
-  { id: 2, title: "Type de consultation", icon: "🏥" },
-  { id: 3, title: "Date et heure", icon: "📅" },
-  { id: 4, title: "Informations médicales", icon: "📋" },
-  { id: 5, title: "Paiement", icon: "💳" },
-];
 
 const NewAppointmentForm = ({ 
   preselectedService = "", 
   isRescheduling = false, 
   originalAppointmentId = null 
 }: NewAppointmentFormProps) => {
-  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [step, setStep] = useState(1);
-  const [createAccount, setCreateAccount] = useState(false);
-  const [formData, setFormData] = useState({
-    // Patient info
-    name: user?.name || "",
-    email: user?.email || "",
-    phone: user?.phone || "",
-    forSomeoneElse: false,
-    beneficiaryName: "",
-    
-    // Appointment details
-    date: "",
-    time: "",
-    service: preselectedService || "",
-    consultationType: "cabinet",
-    urgency: false,
-    teleconsultationDevice: "computer",
-    reason: "",
-    symptoms: "",
-    
-    // Medical info
-    allergies: "",
-    currentMedications: "",
-    documents: [] as File[],
-    
-    // Insurance
-    insurance: "",
-    insuranceNumber: "",
-    
-    // Reminders
-    emailReminder: true,
-    smsReminder: true,
+  
+  const {
+    formData,
+    setFormData,
+    step,
+    createAccount,
+    setCreateAccount,
+    nextStep,
+    prevStep,
+    isStepComplete
+  } = useAppointmentForm({ 
+    preselectedService, 
+    isRescheduling, 
+    originalAppointmentId 
   });
-
-  // Update form data when user data changes or preselected service changes
-  useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        name: user.name || prev.name,
-        email: user.email || prev.email,
-        phone: user.phone || prev.phone
-      }));
-    }
-    
-    if (preselectedService) {
-      setFormData(prev => ({
-        ...prev,
-        service: preselectedService
-      }));
-    }
-  }, [user, preselectedService]);
-
-  // Check if we're rescheduling
-  useEffect(() => {
-    const isReschedulingFromLocation = location.state?.isRescheduling;
-    if (isReschedulingFromLocation || isRescheduling) {
-      toast({
-        title: "Reprogrammation de rendez-vous",
-        description: "Vous êtes en train de reprogrammer un rendez-vous existant",
-      });
-    }
-  }, [location.state, toast, isRescheduling]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,86 +81,6 @@ const NewAppointmentForm = ({
     });
   };
 
-  const nextStep = () => {
-    if (step < STEPS.length) {
-      setStep(step + 1);
-      window.scrollTo(0, 0);
-    }
-  };
-  
-  const prevStep = () => {
-    if (step > 1) {
-      setStep(step - 1);
-      window.scrollTo(0, 0);
-    }
-  };
-
-  const isStepComplete = (stepNumber: number) => {
-    if (stepNumber === 1) {
-      // Patient info step
-      if (user) return true; // User is already logged in
-      return Boolean(formData.name && formData.email && formData.phone);
-    }
-    if (stepNumber === 2) {
-      // Consultation type step
-      return Boolean(formData.consultationType && 
-        (formData.consultationType === "teleconsultation" || formData.service));
-    }
-    if (stepNumber === 3) {
-      // Date time step
-      return Boolean(formData.date && formData.time);
-    }
-    if (stepNumber === 4) {
-      // Medical info step - optional
-      return true;
-    }
-    return true;
-  };
-
-  const renderStep = () => {
-    switch (step) {
-      case 1:
-        return (
-          <PatientInfoStep
-            formData={formData}
-            setFormData={setFormData}
-            createAccount={createAccount}
-            setCreateAccount={setCreateAccount}
-          />
-        );
-      case 2:
-        return (
-          <ConsultationTypeStep
-            formData={formData}
-            setFormData={setFormData}
-          />
-        );
-      case 3:
-        return (
-          <DateTimeStep
-            formData={formData}
-            setFormData={setFormData}
-          />
-        );
-      case 4:
-        return (
-          <MedicalInfoStep
-            formData={formData}
-            setFormData={setFormData}
-          />
-        );
-      case 5:
-        return (
-          <PaymentStep
-            amount={formData.consultationType === "teleconsultation" ? 12000 : 15000}
-            onPaymentComplete={handlePaymentComplete}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
@@ -229,16 +88,23 @@ const NewAppointmentForm = ({
           {isRescheduling ? "Reprogrammer un rendez-vous" : "Prendre un rendez-vous"}
         </CardTitle>
         <CardDescription>
-          <StepIndicator steps={STEPS} currentStep={step} />
+          <StepIndicator steps={FORM_STEPS} currentStep={step} />
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {renderStep()}
+          <FormStepRenderer 
+            step={step}
+            formData={formData}
+            setFormData={setFormData}
+            createAccount={createAccount}
+            setCreateAccount={setCreateAccount}
+            onPaymentComplete={handlePaymentComplete}
+          />
           
           <FormStepNavigation
             currentStep={step}
-            totalSteps={STEPS.length}
+            totalSteps={FORM_STEPS.length}
             onBack={prevStep}
             onNext={nextStep}
             isNextDisabled={!isStepComplete(step)}

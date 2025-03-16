@@ -1,4 +1,3 @@
-
 import { User, Video, Monitor, Smartphone, Info } from "lucide-react";
 import {
   Card,
@@ -20,14 +19,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { AppointmentFormData } from "@/hooks/useAppointmentForm";
 
 interface ConsultationTypeStepProps {
-  formData: {
-    consultationType: string;
-    service: string;
-    urgency: boolean;
-    teleconsultationDevice?: string;
-  };
+  formData: Pick<AppointmentFormData, 'consultationType' | 'service' | 'urgency' | 'teleconsultationDevice'>;
   setFormData: (data: any) => void;
 }
 
