@@ -1,4 +1,3 @@
-
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,16 +5,10 @@ import { Download, Calendar, Clock, User, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { Appointment } from "@/types/appointment";
 
 interface AppointmentTicketProps {
-  appointment: {
-    id: string;
-    date: string;
-    time: string;
-    doctorName: string;
-    location?: string;
-    speciality?: string;
-  };
+  appointment: Appointment;
 }
 
 const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
@@ -33,12 +26,10 @@ const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
         description: "Veuillez patienter pendant la génération du PDF...",
       });
 
-      // Optimisation: ensure element is fully rendered before capture
       await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Capture component as image with better quality settings
+
       const canvas = await html2canvas(ticketRef.current, {
-        scale: 3, // Higher quality
+        scale: 3,
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
@@ -47,7 +38,6 @@ const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
         removeContainer: true
       });
 
-      // Create PDF with better quality
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -59,13 +49,10 @@ const AppointmentTicket = ({ appointment }: AppointmentTicketProps) => {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      // Add image with compression options
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-      
-      // Generate filename with date and appointment ID
+
       const fileName = `ticket_rdv_${appointment.id}_${new Date().toISOString().split('T')[0]}.pdf`;
-      
-      // Save PDF
+
       pdf.save(fileName);
 
       toast({
