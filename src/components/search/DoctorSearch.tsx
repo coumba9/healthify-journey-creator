@@ -117,7 +117,7 @@ const DoctorSearch = () => {
     }, 1000);
   };
 
-  const handleBookAppointment = (doctorId: string) => {
+  const handleBookAppointment = (doctor: Doctor) => {
     if (!user) {
       // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
       // avec un paramètre pour rediriger vers la page de prise de rendez-vous après connexion
@@ -128,10 +128,16 @@ const DoctorSearch = () => {
       });
     } else {
       // Si l'utilisateur est connecté, rediriger directement vers la page de prise de rendez-vous
-      navigate(`/dashboard/appointments`);
+      // avec les informations du médecin sélectionné
+      navigate(`/appointment`, {
+        state: {
+          preselectedService: doctor.specialty,
+          preselectedDoctor: doctor.name
+        }
+      });
       toast({
         title: "Page de rendez-vous",
-        description: "Vous pouvez maintenant prendre rendez-vous",
+        description: `Vous pouvez maintenant prendre rendez-vous avec ${doctor.name}`,
       });
     }
   };
@@ -189,7 +195,7 @@ const DoctorSearch = () => {
               <DoctorCard 
                 key={doctor.id} 
                 doctor={doctor} 
-                onBookAppointment={() => handleBookAppointment(doctor.id)}
+                onBookAppointment={() => handleBookAppointment(doctor)}
               />
             ))}
           </div>

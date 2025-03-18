@@ -18,12 +18,14 @@ import FormStepRenderer from "./form/FormStepRenderer";
 
 export interface NewAppointmentFormProps {
   preselectedService?: string;
+  preselectedDoctor?: string;
   isRescheduling?: boolean;
   originalAppointmentId?: string | null;
 }
 
 const NewAppointmentForm = ({ 
   preselectedService = "", 
+  preselectedDoctor = "",
   isRescheduling = false, 
   originalAppointmentId = null 
 }: NewAppointmentFormProps) => {
@@ -41,6 +43,7 @@ const NewAppointmentForm = ({
     isStepComplete
   } = useAppointmentForm({ 
     preselectedService, 
+    preselectedDoctor,
     isRescheduling, 
     originalAppointmentId 
   });
@@ -54,7 +57,7 @@ const NewAppointmentForm = ({
       console.log("Sending appointment confirmation SMS to:", formData.phone);
       twilioService.sendAppointmentReminder(
         formData.phone,
-        "Cabinet Médical", // Replace with actual doctor name when available
+        formData.doctorName || "Cabinet Médical",
         formData.date,
         formData.time
       ).then(result => {

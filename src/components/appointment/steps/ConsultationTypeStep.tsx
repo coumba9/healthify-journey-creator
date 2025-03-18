@@ -1,3 +1,4 @@
+
 import { User, Video, Monitor, Smartphone, Info } from "lucide-react";
 import {
   Card,
@@ -22,7 +23,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { AppointmentFormData } from "@/hooks/useAppointmentForm";
 
 interface ConsultationTypeStepProps {
-  formData: Pick<AppointmentFormData, 'consultationType' | 'service' | 'urgency' | 'teleconsultationDevice'>;
+  formData: Pick<AppointmentFormData, 'consultationType' | 'service' | 'urgency' | 'teleconsultationDevice' | 'doctorName'>;
   setFormData: (data: any) => void;
 }
 
@@ -30,6 +31,41 @@ const ConsultationTypeStep = ({
   formData,
   setFormData,
 }: ConsultationTypeStepProps) => {
+  // Sample doctor data - in a real application, this would be fetched from an API
+  const doctors = {
+    generaliste: [
+      { id: "doc1", name: "Dr. Martin Dupont" },
+      { id: "doc2", name: "Dr. Camille Laurent" },
+      { id: "doc3", name: "Dr. Thomas Petit" },
+    ],
+    cardiologie: [
+      { id: "doc4", name: "Dr. Sophie Moreau" },
+      { id: "doc5", name: "Dr. Antoine Bernard" },
+    ],
+    pediatrie: [
+      { id: "doc6", name: "Dr. Julie Girard" },
+      { id: "doc7", name: "Dr. Michel Blanc" },
+    ],
+    dermatologie: [
+      { id: "doc8", name: "Dr. Emma Dubois" },
+      { id: "doc9", name: "Dr. Nicolas Rousseau" },
+    ],
+    ophtalmologie: [
+      { id: "doc10", name: "Dr. Claire Lefebvre" },
+      { id: "doc11", name: "Dr. Philippe Martin" },
+    ],
+    psychologie: [
+      { id: "doc12", name: "Dr. Marie Roux" },
+      { id: "doc13", name: "Dr. Lucas Fournier" },
+    ],
+  };
+
+  // Get doctors based on selected service
+  const availableDoctors = 
+    formData.service && doctors[formData.service as keyof typeof doctors] ? 
+    doctors[formData.service as keyof typeof doctors] : 
+    [];
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium">Type de consultation</h3>
@@ -55,7 +91,12 @@ const ConsultationTypeStep = ({
                 <Select
                   value={formData.service}
                   onValueChange={(value) => 
-                    setFormData({ ...formData, service: value })
+                    setFormData({ 
+                      ...formData, 
+                      service: value,
+                      doctorName: "", // Reset doctor when service changes
+                      doctorId: "" 
+                    })
                   }
                 >
                   <SelectTrigger>
@@ -70,6 +111,35 @@ const ConsultationTypeStep = ({
                   </SelectContent>
                 </Select>
               </div>
+
+              {formData.service && (
+                <div className="space-y-2">
+                  <Label>Médecin</Label>
+                  <Select
+                    value={formData.doctorName}
+                    onValueChange={(value) => {
+                      const selectedDoctor = availableDoctors.find(doc => doc.name === value);
+                      setFormData({ 
+                        ...formData, 
+                        doctorName: value,
+                        doctorId: selectedDoctor?.id || ""
+                      });
+                    }}
+                    disabled={!formData.service}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un médecin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableDoctors.map(doctor => (
+                        <SelectItem key={doctor.id} value={doctor.name}>
+                          {doctor.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               
               <div className="flex items-center space-x-2">
                 <Switch
@@ -93,7 +163,12 @@ const ConsultationTypeStep = ({
                 <Select
                   value={formData.service}
                   onValueChange={(value) => 
-                    setFormData({ ...formData, service: value })
+                    setFormData({ 
+                      ...formData, 
+                      service: value,
+                      doctorName: "", // Reset doctor when service changes
+                      doctorId: "" 
+                    })
                   }
                 >
                   <SelectTrigger>
@@ -108,6 +183,35 @@ const ConsultationTypeStep = ({
                   </SelectContent>
                 </Select>
               </div>
+
+              {formData.service && (
+                <div className="space-y-2">
+                  <Label>Médecin</Label>
+                  <Select
+                    value={formData.doctorName}
+                    onValueChange={(value) => {
+                      const selectedDoctor = availableDoctors.find(doc => doc.name === value);
+                      setFormData({ 
+                        ...formData, 
+                        doctorName: value,
+                        doctorId: selectedDoctor?.id || ""
+                      });
+                    }}
+                    disabled={!formData.service}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un médecin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableDoctors.map(doctor => (
+                        <SelectItem key={doctor.id} value={doctor.name}>
+                          {doctor.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label>Appareil préféré pour la téléconsultation</Label>

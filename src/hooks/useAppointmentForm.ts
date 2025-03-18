@@ -15,6 +15,8 @@ export interface AppointmentFormData {
   date: string;
   time: string;
   service: string;
+  doctorId: string;
+  doctorName: string;
   consultationType: string;
   urgency: boolean;
   teleconsultationDevice: string;
@@ -37,12 +39,14 @@ export interface AppointmentFormData {
 
 interface UseAppointmentFormProps {
   preselectedService?: string;
+  preselectedDoctor?: string;
   isRescheduling?: boolean;
   originalAppointmentId?: string | null;
 }
 
 export function useAppointmentForm({
   preselectedService = "",
+  preselectedDoctor = "",
   isRescheduling = false,
   originalAppointmentId = null
 }: UseAppointmentFormProps) {
@@ -62,6 +66,8 @@ export function useAppointmentForm({
     date: "",
     time: "",
     service: preselectedService || "",
+    doctorId: "",
+    doctorName: preselectedDoctor || "",
     consultationType: "cabinet",
     urgency: false,
     teleconsultationDevice: "computer",
@@ -99,7 +105,14 @@ export function useAppointmentForm({
         service: preselectedService
       }));
     }
-  }, [user, preselectedService]);
+
+    if (preselectedDoctor) {
+      setFormData(prev => ({
+        ...prev,
+        doctorName: preselectedDoctor
+      }));
+    }
+  }, [user, preselectedService, preselectedDoctor]);
 
   const nextStep = () => {
     if (step < 5) {
@@ -123,8 +136,7 @@ export function useAppointmentForm({
     }
     if (stepNumber === 2) {
       // Consultation type step
-      return Boolean(formData.consultationType && 
-        (formData.consultationType === "teleconsultation" || formData.service));
+      return Boolean(formData.consultationType && formData.service && formData.doctorName);
     }
     if (stepNumber === 3) {
       // Date time step

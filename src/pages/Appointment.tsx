@@ -10,6 +10,7 @@ const Appointment = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const preselectedService = location.state?.preselectedService || "";
+  const preselectedDoctor = location.state?.preselectedDoctor || "";
   const isRescheduling = location.state?.isRescheduling || false;
   const originalAppointmentId = location.state?.originalAppointmentId || null;
 
@@ -40,7 +41,8 @@ const Appointment = () => {
         </div>
 
         <NewAppointmentForm 
-          preselectedService={preselectedService} 
+          preselectedService={preselectedService}
+          preselectedDoctor={preselectedDoctor}
           isRescheduling={isRescheduling}
           originalAppointmentId={originalAppointmentId}
         />
