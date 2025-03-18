@@ -1,5 +1,5 @@
 
-import { Star, Calendar, Euro, MapPin, Clock, ShieldCheck } from "lucide-react";
+import { Star, Calendar, Euro, MapPin, Clock, ShieldCheck, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +41,7 @@ const DoctorCard = ({ doctor, onBookAppointment }: DoctorCardProps) => {
   };
 
   const handleViewProfile = () => {
-    navigate(`/doctor/${doctor.id}`);
+    navigate(`/doctors/${doctor.id}`);
   };
 
   return (
@@ -113,6 +113,7 @@ const DoctorCard = ({ doctor, onBookAppointment }: DoctorCardProps) => {
           className="flex-1"
           onClick={handleViewProfile}
         >
+          <User className="h-4 w-4 mr-2" />
           Voir le profil
         </Button>
         <Button 

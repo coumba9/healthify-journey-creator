@@ -42,16 +42,22 @@ const DoctorProfilePage = () => {
 
   const handleBookAppointment = () => {
     if (!user) {
-      navigate(`/login?redirect=/dashboard/appointments`);
+      navigate('/login?redirect=/appointment');
       toast({
         title: "Connexion requise",
         description: "Veuillez vous connecter pour prendre un rendez-vous",
       });
     } else {
-      navigate(`/dashboard/appointments`);
+      // Redirect to appointment page with doctor info
+      navigate('/appointment', {
+        state: {
+          preselectedService: doctor.specialty.toLowerCase(),
+          preselectedDoctor: doctor.name
+        }
+      });
       toast({
-        title: "Page de rendez-vous",
-        description: "Vous pouvez maintenant prendre rendez-vous",
+        title: "Prise de rendez-vous",
+        description: `Vous allez prendre rendez-vous avec ${doctor.name}`,
       });
     }
   };
@@ -72,7 +78,7 @@ const DoctorProfilePage = () => {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <h1>Médecin non trouvé</h1>
-          <Button onClick={() => navigate(-1)}>Retour</Button>
+          <Button onClick={() => navigate('/doctors')}>Retour</Button>
         </div>
       </div>
     );

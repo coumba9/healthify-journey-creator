@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import SearchFilters from "./SearchFilters";
 import DoctorCard from "./DoctorCard";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,7 +35,6 @@ const DoctorSearch = () => {
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // Exemple de données (à remplacer par des données réelles)
   const doctors: Doctor[] = [
     {
       id: "1",
@@ -95,7 +93,6 @@ const DoctorSearch = () => {
   const handleSearch = () => {
     setIsLoading(true);
     
-    // Simuler un délai de chargement (à remplacer par un appel API réel)
     setTimeout(() => {
       const filtered = doctors.filter(doctor => {
         const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -119,25 +116,21 @@ const DoctorSearch = () => {
 
   const handleBookAppointment = (doctor: Doctor) => {
     if (!user) {
-      // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-      // avec un paramètre pour rediriger vers la page de prise de rendez-vous après connexion
-      navigate(`/login?redirect=/dashboard/appointments`);
+      navigate('/login?redirect=/appointment');
       toast({
         title: "Connexion requise",
         description: "Veuillez vous connecter pour prendre un rendez-vous",
       });
     } else {
-      // Si l'utilisateur est connecté, rediriger directement vers la page de prise de rendez-vous
-      // avec les informations du médecin sélectionné
-      navigate(`/appointment`, {
+      navigate('/appointment', {
         state: {
           preselectedService: doctor.specialty,
           preselectedDoctor: doctor.name
         }
       });
       toast({
-        title: "Page de rendez-vous",
-        description: `Vous pouvez maintenant prendre rendez-vous avec ${doctor.name}`,
+        title: "Prise de rendez-vous",
+        description: `Vous allez prendre rendez-vous avec ${doctor.name}`,
       });
     }
   };
