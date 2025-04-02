@@ -1,19 +1,12 @@
+
 import { useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
   Search,
-  UserPlus,
   FileText,
   Calendar,
   MoreVertical,
@@ -40,7 +33,6 @@ const PatientsPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [showAddPatient, setShowAddPatient] = useState(false);
 
   // Exemple de données de patients (à remplacer par une vraie API)
   const [patients] = useState<Patient[]>([
@@ -77,16 +69,6 @@ const PatientsPage = () => {
     patient.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAddPatient = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Logique d'ajout de patient ici
-    toast({
-      title: "Patient ajouté",
-      description: "Le nouveau patient a été ajouté avec succès.",
-    });
-    setShowAddPatient(false);
-  };
-
   const handleViewMedicalRecord = (patientId: string) => {
     navigate(`/dashboard/patients/${patientId}/medical-record`);
     toast({
@@ -118,28 +100,6 @@ const PatientsPage = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Dialog open={showAddPatient} onOpenChange={setShowAddPatient}>
-              <DialogTrigger asChild>
-                <Button className="gap-2">
-                  <UserPlus className="h-4 w-4" />
-                  Ajouter un patient
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Ajouter un nouveau patient</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleAddPatient} className="space-y-4">
-                  <Input placeholder="Nom complet" required />
-                  <Input placeholder="Email" type="email" required />
-                  <Input placeholder="Téléphone" required />
-                  <Input placeholder="Âge" type="number" required />
-                  <Button type="submit" className="w-full">
-                    Ajouter le patient
-                  </Button>
-                </form>
-              </DialogContent>
-            </Dialog>
           </div>
         </div>
 
