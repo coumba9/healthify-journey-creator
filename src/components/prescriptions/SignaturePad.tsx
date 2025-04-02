@@ -1,3 +1,4 @@
+
 import React from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { Button } from "@/components/ui/button";
@@ -16,10 +17,6 @@ const SignaturePad = ({ onSave }: SignaturePadProps) => {
       if (!signaturePad.isEmpty()) {
         const signatureData = signaturePad.toDataURL();
         onSave(signatureData);
-        toast({
-          title: "Signature enregistrée",
-          description: "L'ordonnance a été signée avec succès.",
-        });
       } else {
         toast({
           title: "Erreur",
@@ -48,7 +45,7 @@ const SignaturePad = ({ onSave }: SignaturePadProps) => {
           }}
         />
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-end">
         <Button onClick={handleClear} variant="outline">
           Effacer
         </Button>

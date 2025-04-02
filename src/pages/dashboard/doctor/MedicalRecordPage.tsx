@@ -1,21 +1,39 @@
+
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useParams } from "react-router-dom";
-import { FileText, Plus } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { FileText, Plus, PenTool } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const MedicalRecordPage = () => {
   const { patientId } = useParams();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleCreatePrescription = () => {
+    navigate("/dashboard/doctor/prescriptions");
+    toast({
+      title: "Création d'ordonnance",
+      description: "Redirecton vers la page de création d'ordonnance",
+    });
+  };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Dossier Médical</h1>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter une note
-          </Button>
+          <div className="flex gap-2">
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Ajouter une note
+            </Button>
+            <Button variant="outline" onClick={handleCreatePrescription}>
+              <PenTool className="h-4 w-4 mr-2" />
+              Créer une ordonnance
+            </Button>
+          </div>
         </div>
 
         <Card>
