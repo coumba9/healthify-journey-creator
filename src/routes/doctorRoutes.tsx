@@ -3,7 +3,6 @@ import { Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import SchedulePage from "@/pages/dashboard/doctor/SchedulePage";
 import PatientsPage from "@/pages/dashboard/doctor/PatientsPage";
-import AddPatientPage from "@/pages/dashboard/doctor/AddPatientPage";
 import MedicalRecordPage from "@/pages/dashboard/doctor/MedicalRecordPage";
 import AppointmentDetailsPage from "@/pages/dashboard/doctor/AppointmentDetailsPage";
 import AvailabilityPage from "@/pages/dashboard/doctor/AvailabilityPage";
@@ -29,15 +28,6 @@ export const doctorRoutes = [
     element={
       <ProtectedRoute allowedRoles={["doctor"]}>
         <PatientsPage />
-      </ProtectedRoute>
-    }
-  />,
-  <Route
-    key="add-patient"
-    path="/dashboard/patients/add"
-    element={
-      <ProtectedRoute allowedRoles={["doctor"]}>
-        <AddPatientPage />
       </ProtectedRoute>
     }
   />,
