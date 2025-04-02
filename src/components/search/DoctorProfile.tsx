@@ -14,13 +14,15 @@ import { useDoctorProfileData } from "../doctor/profile/useDoctorProfileData";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "lucide-react";
 
 interface DoctorProfileProps {
   doctorId: string;
 }
 
 const DoctorProfile = ({ doctorId }: DoctorProfileProps) => {
-  const { doctor, isLoading, error, handleBookAppointment } = useDoctorProfileData(doctorId);
+  const { doctor, isLoading, error } = useDoctorProfileData(doctorId);
   const [activeTab, setActiveTab] = useState("info");
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -50,25 +52,40 @@ const DoctorProfile = ({ doctorId }: DoctorProfileProps) => {
   };
 
   if (isLoading) {
-    return <div className="max-w-4xl mx-auto p-6">Chargement...</div>;
+    return <div className="max-w-4xl mx-auto p-6 flex justify-center items-center h-64">
+      <div className="animate-pulse flex flex-col items-center">
+        <div className="h-12 w-24 bg-gray-200 rounded mb-4"></div>
+        <div className="h-4 w-32 bg-gray-200 rounded"></div>
+      </div>
+    </div>;
   }
 
   if (error || !doctor) {
-    return <div className="max-w-4xl mx-auto p-6">Erreur: {error || "Médecin non trouvé"}</div>;
+    return <div className="max-w-4xl mx-auto p-6 text-center">
+      <p className="text-red-500 mb-4">Erreur: {error || "Médecin non trouvé"}</p>
+      <Button variant="outline" onClick={() => navigate(-1)}>Retour</Button>
+    </div>;
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <Card>
-        <CardHeader>
+      <Card className="shadow-lg">
+        <CardHeader className="pb-0">
           <DoctorProfileHeader 
             name={doctor.name}
             specialty={doctor.specialty}
             rating={doctor.rating}
             reviewCount={doctor.reviews.length}
           />
+          <Button 
+            className="w-full mt-4 bg-primary-600 hover:bg-primary-700" 
+            onClick={handleAppointment}
+          >
+            <Calendar className="mr-2 h-4 w-4" />
+            Prendre rendez-vous
+          </Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <Tabs defaultValue="info" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="info">Informations</TabsTrigger>
@@ -76,7 +93,7 @@ const DoctorProfile = ({ doctorId }: DoctorProfileProps) => {
               <TabsTrigger value="reviews">Avis</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="info" className="space-y-4">
+            <TabsContent value="info" className="space-y-4 mt-4">
               <DoctorInfoTab 
                 location={doctor.location}
                 price={doctor.price}
@@ -87,14 +104,14 @@ const DoctorProfile = ({ doctorId }: DoctorProfileProps) => {
               />
             </TabsContent>
 
-            <TabsContent value="schedule">
+            <TabsContent value="schedule" className="mt-4">
               <DoctorScheduleTab 
                 onBookAppointment={handleAppointment}
                 schedules={doctor.schedules}
               />
             </TabsContent>
 
-            <TabsContent value="reviews">
+            <TabsContent value="reviews" className="mt-4">
               <DoctorReviewsTab 
                 reviews={doctor.reviews}
                 doctorName={doctor.name}

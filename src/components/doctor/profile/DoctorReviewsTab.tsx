@@ -31,10 +31,8 @@ const DoctorReviewsTab = ({ reviews, doctorName, doctorSpecialty }: DoctorReview
         title: "Connexion requise",
         description: "Veuillez vous connecter pour prendre un rendez-vous",
       });
-      // Rediriger vers la page de connexion avec un paramètre de redirection
       navigate('/login?redirect=/appointment');
     } else {
-      // Rediriger vers la page de rendez-vous avec les informations du médecin
       navigate('/appointment', {
         state: {
           preselectedService: doctorSpecialty || "",
@@ -53,7 +51,7 @@ const DoctorReviewsTab = ({ reviews, doctorName, doctorSpecialty }: DoctorReview
       {/* Bouton de prise de rendez-vous */}
       {doctorName && (
         <Button 
-          className="w-full mb-4" 
+          className="w-full mb-4 bg-primary-600 hover:bg-primary-700" 
           onClick={handleBookAppointment}
         >
           <Calendar className="mr-2 h-4 w-4" />
@@ -61,18 +59,19 @@ const DoctorReviewsTab = ({ reviews, doctorName, doctorSpecialty }: DoctorReview
         </Button>
       )}
       
-      {reviews.map((review) => (
-        <DoctorReviewItem 
-          key={review.id}
-          id={review.id}
-          author={review.author}
-          rating={review.rating}
-          comment={review.comment}
-          date={review.date}
-        />
-      ))}
-      {reviews.length === 0 && (
+      {reviews.length === 0 ? (
         <p className="text-center py-4 text-gray-500">Aucun avis pour ce médecin.</p>
+      ) : (
+        reviews.map((review) => (
+          <DoctorReviewItem 
+            key={review.id}
+            id={review.id}
+            author={review.author}
+            rating={review.rating}
+            comment={review.comment}
+            date={review.date}
+          />
+        ))
       )}
     </div>
   );
