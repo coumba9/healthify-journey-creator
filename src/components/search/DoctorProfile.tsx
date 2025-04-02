@@ -11,6 +11,9 @@ import DoctorInfoTab from "../doctor/profile/DoctorInfoTab";
 import DoctorScheduleTab from "../doctor/profile/DoctorScheduleTab";
 import DoctorReviewsTab from "../doctor/profile/DoctorReviewsTab";
 import { useDoctorProfileData } from "../doctor/profile/useDoctorProfileData";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface DoctorProfileProps {
   doctorId: string;
@@ -19,6 +22,32 @@ interface DoctorProfileProps {
 const DoctorProfile = ({ doctorId }: DoctorProfileProps) => {
   const { doctor, isLoading, error, handleBookAppointment } = useDoctorProfileData(doctorId);
   const [activeTab, setActiveTab] = useState("info");
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleAppointment = () => {
+    if (!user) {
+      toast({
+        title: "Connexion requise",
+        description: "Veuillez vous connecter pour prendre un rendez-vous",
+      });
+      navigate('/login?redirect=/appointment');
+    } else {
+      if (doctor) {
+        navigate('/appointment', {
+          state: {
+            preselectedService: doctor.specialty,
+            preselectedDoctor: doctor.name
+          }
+        });
+        toast({
+          title: "Prise de rendez-vous",
+          description: `Vous allez prendre rendez-vous avec ${doctor.name}`,
+        });
+      }
+    }
+  };
 
   if (isLoading) {
     return <div className="max-w-4xl mx-auto p-6">Chargement...</div>;
@@ -60,13 +89,17 @@ const DoctorProfile = ({ doctorId }: DoctorProfileProps) => {
 
             <TabsContent value="schedule">
               <DoctorScheduleTab 
-                onBookAppointment={handleBookAppointment}
+                onBookAppointment={handleAppointment}
                 schedules={doctor.schedules}
               />
             </TabsContent>
 
             <TabsContent value="reviews">
-              <DoctorReviewsTab reviews={doctor.reviews} />
+              <DoctorReviewsTab 
+                reviews={doctor.reviews}
+                doctorName={doctor.name}
+                doctorSpecialty={doctor.specialty}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
