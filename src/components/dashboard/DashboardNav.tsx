@@ -10,6 +10,7 @@ import {
   LogOut,
   Bell,
   MessageSquare,
+  Clock,
 } from "lucide-react";
 import {
   Sidebar,
@@ -56,6 +57,7 @@ const DashboardNav = () => {
           { title: "Accueil", icon: Home, url: "/dashboard" },
           { title: "Planning", icon: Calendar, url: "/dashboard/schedule" },
           { title: "Patients", icon: Users, url: "/dashboard/patients" },
+          { title: "Disponibilités", icon: Clock, url: "/dashboard/availability" },
           { title: "Documents", icon: FileText, url: "/dashboard/doctor/documents" },
           { title: "Messages", icon: MessageSquare, url: "/dashboard/doctor/messages" },
         ];
